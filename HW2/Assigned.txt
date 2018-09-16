@@ -1,0 +1,32 @@
+3. Robot Software: 2
+4. Simulation: 3, 13, 14
+
+3.2.    Using ROS and Python, modify the example programs in the text on the 
+        kinematics of the two link manipulator.
+
+        Write a program that creates a list of 100 equally spaced points along the path y=15−x for 0≤x≤10 and publishes those points on the topic /physData using a multiarray floating data type, i.e. values x and y are floats. Publish the data at 5Hz.
+
+        Write a program that subscribes to topic /physData, plugs the values 
+        in, computes the serial two link inverse kinematics to gain the servo angles (pick one of the +/-) and publishes the angles to the topic /thetaData. You may assume the link arms are a1=a2=10. Format will be the same as the previous topic.
+
+        Write a program that subscribes to both /physData and /thetaData. The program should plug the angles into the forward kinematics and check against the data in /physData. It should plot the original curve in green and the “check” in blue.
+
+
+4.3     Using ROS and Python, write a program to calculate the motion of a 
+        differential drive robot.
+
+            Write a program that publishes a sequence of wheel velocities on the topic /WheelVel at 10Hz. Use the multiarray datatype. This node should be named Control. This program should also publish on a topic named /Active either 1 or 0 at 1 Hz to say whether or not the robot is active (meaning done with wheel velocities and you can plot now: active =1, done = 0). Demonstrate the code on ϕ˙1=2+2e−tn and ϕ˙2=2+e−2tn for 0≤t≤10
+        
+            Write a program that uses the differential drive kinematics to derive the robot linear and angular velocities. Publish the velocities using the ROS standard twist message and name the topic /RobotVel. This node should be named ForwardK. Assume that D=10, L=20 and the robot starts at (0,0,0).
+        
+            Write a program that will subscribe to the twist message and plot the robot’s path using Python plotting when it gets the signal on the Active topic. This node should be named RobotPlot.
+
+4.13    Using the Veranda simulator, write robot control code to drive the 
+        robot along:
+
+            the triangular path with vertices (0,0), (15,0) , (5,20),
+            the square path with corners (0,0), (10,0), (10,10), (0,10),
+            the circular path centered at the origin and radius is 15.
+
+4.14    Using the Veranda simulator, place two circular obstacles on the 
+        canvas. The first obstacle is a disk centered at (5,5) with radius 2. The second is a disk centered at (15,15) with radius 3. Write the control code to drive a figure 8 around the two obstacles. Run at least two loops.

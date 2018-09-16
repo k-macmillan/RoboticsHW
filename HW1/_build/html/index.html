@@ -1,0 +1,388 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to Kyle’s homework documentation! &#8212; Homework  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-kyle-s-homework-documentation">
+<h1>Welcome to Kyle’s homework documentation!<a class="headerlink" href="#welcome-to-kyle-s-homework-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="homework-1">
+<h1><strong>Homework 1</strong><a class="headerlink" href="#homework-1" title="Permalink to this headline">¶</a></h1>
+<p>Kyle MacMillan</p>
+<p>31 August 2018</p>
+<p><strong>Problems</strong>:</p>
+<blockquote>
+<div><p>Ch1: 1, 8, 15</p>
+<p>Ch2: 9, 10, 11, 29, 31</p>
+<p>Text Addition</p>
+</div></blockquote>
+<div class="section" id="chapter-1">
+<h2>Chapter 1<a class="headerlink" href="#chapter-1" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first"><strong>How would you define a robot?</strong></p>
+<p>The book defines a robot as follows, “A robot is seen as a sophisticated machine that replaces human effort”. In class we further defined a “robot” as a construct that has a changing meaning over time. “I” would define a robot as a mechatronic entity that is capable of performing actions. Yes, this is very broad because robot is a general term.</p>
+</li>
+</ol>
+<ol class="arabic" start="8">
+<li><p class="first"><strong>Do you think the Robotic Appliance and Robotic Agent partitioning is a more effective way to classify robots? Why or why not?</strong></p>
+<p>I do like the classification. Grouping is essential so robots can fit certain functions of the end-user. This also helps people less familiar with the art understand that robots are built for specific purposes, which isn’t always apparent. The book makes note that when a classification restricts innovation it is dead to us. I absolutely agree, but again, bounding things really helps to limit scope and so it definitely has a purpose.</p>
+</li>
+</ol>
+<ol class="arabic" start="15">
+<li><p class="first"><strong>Work in robotics can replace people with machines. This results in job loss. Discuss the ethics of working in the robotics industry.</strong></p>
+<p>I could literally write a book on this topic, and if you summed all the posts I’ve made across all the social media I use I’m sure you could piece together said book. That being said, I’ll keep this “brief”.</p>
+<p>Working for a living is a concept that will die within the millenial’s lifetime. It is what I believe to be an inevitability, accelerated by capitalism’s desires to make maximum profit. Coming to this conclusion I decided I want to work in AI or robotics so I can make the machines that replace humans; I want to accelerate it, to progress humanity to the next epoch. That being said I am fully aware it is going to cause immense issues as people are unable to find jobs but that is quite frankly not my problem. That is a societal issue. Planned obsolecense, consumerism, food shortages, and a lot of what is wrong with the world can go away if we accelerate robotic growth. Accelerating job loss is a good thing if the government did their job. Automated vehicles will save tens of thousands of lives annually, the job loss is a concern but is heavily outweighed by the benefit. In my opinion it is on the government’s shoulders to recognize (listen to the very loud groups that have been saying it for years) and effect change that will benefit the people, not the corporations.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="chapter-2">
+<h2>Chapter 2<a class="headerlink" href="#chapter-2" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="9">
+<li></li>
+</ol>
+<img alt="_images/Problem9.jpg" src="_images/Problem9.jpg" />
+<ol class="arabic" start="10">
+<li><p class="first">Code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+
+<span class="k">class</span> <span class="nc">twolink</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; This class is meant for fk and ik operations around a 2-link manipulator. &quot;&quot;&quot;</span>
+        
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length1</span><span class="p">,</span> <span class="n">length2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Class initialization &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">=</span> <span class="n">length1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">=</span> <span class="n">length2</span>
+
+    <span class="k">def</span> <span class="nf">fk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the forward kinematics to determine the x &amp; y values &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta1</span> <span class="o">+</span> <span class="n">theta2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta1</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta1</span> <span class="o">+</span> <span class="n">theta2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">ik</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculates the inverse kinematics to determine the theta1 &amp; theta2 values &quot;&quot;&quot;</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span><span class="p">)</span>
+        <span class="n">theta2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">D</span> <span class="o">*</span> <span class="n">D</span><span class="p">),</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta2</span><span class="p">)),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta2</span><span class="p">)))</span>
+        <span class="n">theta1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma</span>
+
+        <span class="k">return</span> <span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">funct</span><span class="p">,</span> <span class="n">show</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds a function to the plot and shows it or not &quot;&quot;&quot;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">funct</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">funct</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        
+
+
+
+<span class="k">def</span> <span class="nf">func1</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">25</span> <span class="o">-</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">func2</span><span class="p">():</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mi">15</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">twolink</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">func1</span><span class="p">()</span>
+    <span class="n">f2</span> <span class="o">=</span> <span class="n">func2</span><span class="p">()</span>
+
+    <span class="c1"># Plot function one</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+    <span class="n">ikf1</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">ik</span><span class="p">(</span><span class="n">f1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># Plot the arm movement</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ikf1</span><span class="p">)</span>
+
+    <span class="c1"># Plot function one</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span>
+    <span class="n">ikf2</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">ik</span><span class="p">(</span><span class="n">f2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># Plot the arm movement</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ikf2</span><span class="p">)</span>
+    
+</pre></div>
+</div>
+</li>
+<li><p class="first">Code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">50</span> <span class="c1"># for linspace</span>
+
+<span class="k">class</span> <span class="nc">twolink</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; This class is meant for fk and ik operations around a 2-link manipulator. </span>
+<span class="sd">        This was updated from problem 10 to allow for starting theta values. &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length1</span><span class="p">,</span> <span class="n">length2</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Class initialization &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">=</span> <span class="n">length1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">=</span> <span class="n">length2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+
+        <span class="c1"># Assign theta1/2 if they were passed in</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta1</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta2</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="nf">setXY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the class&#39;s x and y values &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">setThetas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the class theta values &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta1</span> <span class="o">=</span> <span class="n">theta1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta2</span> <span class="o">=</span> <span class="n">theta2</span>
+        
+
+    <span class="k">def</span> <span class="nf">fk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the forward kinematics to determine the x &amp; y values &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">ik</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculates the inverse kinematics to determine the theta1 &amp; theta2 values &quot;&quot;&quot;</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">D</span> <span class="o">*</span> <span class="n">D</span><span class="p">),</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta2</span><span class="p">)),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta2</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta2</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">funct</span><span class="p">,</span> <span class="n">show</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds a function to the plot and shows it or not &quot;&quot;&quot;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">funct</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">funct</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="c1"># The following functions could be turned into a polygon class but was unecessary for this one problem</span>
+<span class="k">def</span> <span class="nf">line1</span><span class="p">():</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">line2</span><span class="p">():</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">line3</span><span class="p">():</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">line4</span><span class="p">():</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">twolink</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">line1</span><span class="p">()</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">line2</span><span class="p">()</span>
+    <span class="n">l3</span> <span class="o">=</span> <span class="n">line3</span><span class="p">()</span>
+    <span class="n">l4</span> <span class="o">=</span> <span class="n">line4</span><span class="p">()</span>
+
+    <span class="c1"># Add lines to the plot so you can see each individually</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">l2</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">l3</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">l4</span><span class="p">)</span>
+
+    <span class="c1"># Place all points into two np arrays for kinematics and plotting</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">l3</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">l4</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">l2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">l3</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">l4</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">setXY</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">ik</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<ol class="arabic" start="29">
+<li><p class="first">Code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># constants</span>
+<span class="n">D</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mf">16.0</span>
+<span class="n">circ</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+
+
+<span class="k">def</span> <span class="nf">xt</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">x0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">L</span> <span class="o">*</span> <span class="p">(</span><span class="n">w1</span> <span class="o">+</span> <span class="n">w2</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">w1</span> <span class="o">-</span> <span class="n">w2</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">L</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">w1</span> <span class="o">-</span> <span class="n">w2</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">+</span> <span class="n">x0</span>
+
+<span class="k">def</span> <span class="nf">yt</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">y0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">L</span> <span class="o">*</span> <span class="p">(</span><span class="n">w1</span> <span class="o">+</span> <span class="n">w2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">w1</span> <span class="o">-</span> <span class="n">w2</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">((</span><span class="n">r</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">w1</span> <span class="o">-</span> <span class="n">w2</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">+</span> <span class="n">y0</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Set initial variables</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],])</span>
+    <span class="n">t</span><span class="o">=</span><span class="mf">5.0</span>
+    <span class="n">x_position</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">y_position</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># From time = 0 to 5</span>
+    <span class="n">x_position</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="p">)</span> <span class="o">*</span> <span class="n">circ</span> <span class="o">*</span> <span class="n">t</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">positions</span><span class="p">,</span> <span class="p">[[</span><span class="n">x_position</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],]))</span>
+
+
+    <span class="c1"># From time = 5 to 6</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">w2</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">w1</span> <span class="o">-</span> <span class="n">w2</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="mf">0.0</span>
+    <span class="n">x_position</span> <span class="o">=</span> <span class="n">xt</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">x_position</span><span class="p">)</span>
+    <span class="n">y_position</span> <span class="o">=</span> <span class="n">yt</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">y_position</span><span class="p">)</span>
+    <span class="n">ary</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x_position</span><span class="p">,</span><span class="n">y_position</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],])</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">positions</span><span class="p">,</span> <span class="n">ary</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+
+    <span class="c1"># From time = 6 to 10</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">w2</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">4.0</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">w1</span> <span class="o">-</span> <span class="n">w2</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">theta</span>
+    <span class="n">x_position</span> <span class="o">=</span> <span class="n">xt</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">x_position</span><span class="p">)</span>
+    <span class="n">y_position</span> <span class="o">=</span> <span class="n">yt</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">y_position</span><span class="p">)</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">positions</span><span class="p">,</span> <span class="p">[[</span><span class="n">x_position</span><span class="p">,</span><span class="n">y_position</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],]))</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Final position: &#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">positions</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">])))</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<ol class="arabic" start="31">
+<li><p class="first"><strong>Show that the differential drive kinematic equations are non-holonomic constraints.</strong></p>
+<p>Position and orientation are supposed to be independent for holomonic functions.
+With differential drive if you are only able to travel in a straight line then the kinematic equation would be holonomic, but
+when calculating the position we use an equation of the form: t = d1/v1 = d2/v2, which is not holonomic. The book has a description of a holonomic constraint as follows:
+“A holonomic constraint only depends on the coordinates and time and does not depend on derivatives”.</p>
+<p>If both wheels moved at an equal rate then they could be pulled out as a constant of integration but since a differential drive robot has variable wheel speeds we are not able to claim the equations are holonomic.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="text-addition">
+<h2>Text Addition<a class="headerlink" href="#text-addition" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="ethics">
+<h1><strong>Ethics</strong><a class="headerlink" href="#ethics" title="Permalink to this headline">¶</a></h1>
+<p>When discusssing robots and their place in our world, one should address their incredible ability to perform a repetitive task with perfection every time. Robots are known for this, so why should we discuss it? The reality of the situation is that it puts workers out of a job. This is not something new, jobs have been replaced by machines throughout recorded history [reference] chapter 1.</p>
+<p>So if jobs have been replaced for millenia and we are still able to find jobs why should we discuss this topic? Robotics is an exploding field; much like industrial machines helped pave the way during the Industrial Revolution, we are quickly approaching a “Robot Revolution”.</p>
+<p>We are developing robots to perform every-day tasks for us because we enjoy automating mundane, boring tasks. Some tasks are dangerous, so we employ robots to do those tasks for us. We can make a lot of money from having robots perform some tasks more efficiently than humans. These robots have come gradually over many, many years and as a result most people are familiar with them and do not feel threatened by them, and why should they?</p>
+<p>In 2013 Oxford published <a class="reference external" href="https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf">The Future of Employment</a> which stated an estimated 47% of jobs in the United States are at risk. Some considered this report alarmist or scaremongering but numerous studies have been taken since and they all display varying degrees of the same prediction.</p>
+<p>Great minds of the world say robots will take our jobs, so what’s their to debate now? <em>Is it ethical to program or build a robot that is going to take someone’s job?</em></p>
+<p>Transportation jobs in the United States make up approximately 9% of our workforce according to the
+<a class="reference external" href="https://www.bts.gov/content/transportation-related-labor-force-employment-united-states-1990-2016">Bureau of Transportation Statistics</a></p>
+<p>With automated vehicles we are poised to replace the majority of this workforce with robotic workers. Is it ethical to replace these workers? Is it ethical to <em>not</em> replace these workers?</p>
+<p>In 2010 there was an estimated 5,419,000 <a class="reference external" href="https://en.wikipedia.org/wiki/Motor_vehicle_fatality_rate_in_U.S._by_year">vehicle crashes</a>, of which there were 33,000 deaths and 2,239,000 injuries. <a class="reference external" href="https://www.theatlantic.com/technology/archive/2015/09/self-driving-cars-could-save-300000-lives-per-decade-in-america/407956/">It is estimated</a> that taking steering wheels out of human hands will save 300,000 lives per decade. People will continue to die to vehicular accidents so long as humans are behind the wheel. Not all accidents can be avoided and unfortunately some lives will still be lost with automated vehicles driving.</p>
+<p>What about factory or fast food workers? Is it ethical to replace them? Is it ethical to <em>not</em> replace them? A machine can produce the same perfect part every time without getting sick, cutting corners, or having to get spun-up on the task before they generate at peak efficiency. How many times has your order been wrong at a restaurant? A robot can make the perfect burger every time and it can come to you without looking like it has been sat on.</p>
+<p>So if there are huge benefits to having robots perform easily repeatable tasks what do we do with the millions that will be unemployed? That is beyond the scope of robotics, but it is an inevitable problem that robots will cause.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Homework</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Kyle MacMillan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

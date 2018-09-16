@@ -1,0 +1,33 @@
+Kyle MacMillan
+
+
+Chapter 1:  1, 8, 15
+
+1.  How would you define a robot?
+    The book defines a robot as follows, "A robot is seen as a sophisticated machine that replaces human effort". In class we further defined a "robot" as a construct that has a changing meaning over time. "I" would define a robot as a mechatronic entity that is capable of performing actions. Yes, this is very broad because robot is a general term.
+
+8.  Do you think the Robotic Appliance and Robotic Agent partitioning is a 
+    more effective way to classify robots? Why or why not?
+    I do like the classification. Grouping is essential so robots can fit certain functions of the end-user. This also helps people less familiar with the art understand that robots are built for specific purposes, which isn't always apparent. The book makes note that when a classification restricts innovation it is dead to us. I absolutely agree, but again, bounding things really helps to limit scope and so it definitely has a purpose.
+
+15. Work in robotics can replace people with machines. This results in job 
+    loss. Discuss the ethics of working in the robotics industry.
+    I could literally write a book on this topic, and if you summed all the posts I've made across all the social media I use I'm sure you could piece together said book. That being said, I'll keep this "brief". 
+
+    Working for a living is a concept that will die within the millenial's lifetime. It is what I believe to be an inevitability, accelerated by capitalism's desires to make maximum profit. Coming to this conclusion I decided I want to work in AI or robotics so I can make the machines that replace humans; I want to accelerate it, to progress humanity to the next epoch. That being said I am fully aware it is going to cause immense issues as people are unable to find jobs but that is quite frankly not my problem. That is a societal issue. Planned obsolecense, consumerism, food shortages, and a lot of what is wrong with the world can go away if we accelerate robotic growth. Accelerating job loss is a good thing if the government did their job. Automated vehicles will save tens of thousands of lives annually, the job loss is a concern but is heavily outweighed by the benefit. In my opinion it is on the government's shoulders to recognize (listen to the very loud groups that have been saying it for years) and effect change that will benefit the people, not the corporations.
+
+
+Chapter 2:  9, 10, 11, 29, 31
+
+9a. See picture
+10. See Problem10.py
+11. See Problem11.py
+29. See Problem29.py
+
+31. Show that the differential drive kinematic equations are non-holonomic constraints.
+    Position and orientation are supposed to be independent for holomonic functions.
+    With differential drive if you are only able to travel in a straight line then the kinematic equation would be holonomic, but 
+    when calculating the position we use an equation of the form: t = d1/v1 = d2/v2, which is not holonomic. The book has a description of a holonomic constraint as follows:
+    "A holonomic constraint only depends on the coordinates and time and does not depend on derivatives". 
+
+    If both wheels moved at an equal rate then they could be pulled out as a constant of integration but since a differential drive robot has variable wheel speeds we are not able to claim the equations are holonomic.

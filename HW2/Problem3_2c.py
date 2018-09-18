@@ -26,6 +26,7 @@ class twolink():
         self.plot_data_fk_x = []
         self.plot_data_fk_y = []
         self.showing_plot = False
+        self.s_plot = plt.figure()
 
         # ROS init
         self.nc = NodeControl()
@@ -89,10 +90,12 @@ class twolink():
             self.plot_data_fk_x.append(data[0])
             self.plot_data_fk_y.append(data[1])
             plt.scatter(self.plot_data_fk_x, self.plot_data_fk_y, c='b')
+
         elif not self.showing_plot:
             self.showing_plot = True
             plt.title('Verifying Workspace Points')
             plt.show()
+            self.s_plot.savefig('Problem3_2c.svg', format='svg', dpi=800)
             print('Press \"ctrl\" + \"c\" to exit')
 
 

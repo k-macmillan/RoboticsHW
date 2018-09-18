@@ -10,8 +10,9 @@ class IkNode(RosNode):
 
     def sub_pub(self, msg):
         self.pub_msg.data = self.runik(msg.data)
-        print('Theta points: ', self.pub_msg.data)
+        # print('Node: {} theta points: {}'.format(self.name, self.pub_msg.data))
         self.publisher.publish(self.pub_msg)
+
 
     def runik(self, xy):
         return self.obj.getik(xy)

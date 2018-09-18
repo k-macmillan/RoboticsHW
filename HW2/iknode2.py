@@ -9,12 +9,11 @@ class IkNode2(RosNode):
     def __init__(self, **kwargs):
         super(IkNode2, self).__init__(**kwargs)
 
-    def sub_pub(self, msg):
-        ik = self.runik(msg.data)
-        fk = self.runfk(ik)
-        # self.pub_msg.data =
-        print('Theta points: ', self.pub_msg.data)
-        self.publisher.publish(self.pub_msg)
+    def subscribe(self, msg, topic):
+        # for arg in msg:
+        print(msg.data)
+        # print()
+        # print((msg.data.__str__.__doc__))
 
     def runik(self, xy):
         return self.obj.getik(xy)
@@ -22,8 +21,9 @@ class IkNode2(RosNode):
     def runfk(self, thetas):
         return self.obj.getfk(thetas)
 
-    def plotdata(self, xy, thetas):
-        print('Plotting...')
 
 
-# TODO: Allow node to have multiple subscriptions
+
+# Write a program that subscribes to both /physData and /thetaData. 
+# The program should plug the angles into the forward kinematics and check against the data in /physData. 
+# It should plot the original curve in green and the “check” in blue.

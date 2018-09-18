@@ -36,6 +36,10 @@ class twolink():
                           pub_data_type=Float32MultiArray,
                           pub_chan='/thetaData',
                           pub_data=self.theta))
+        nc.addnode(IkNode2(name='node_dual_sub',
+                           obj=self,
+                           sub_data_type=Float32MultiArray,
+                           sub_chan=('/physData', '/thetaData')))
 
         nc.run()
 

@@ -10,7 +10,9 @@ class IkNode(RosNode):
 
     def sub_pub(self, topic, msg):
         self.pub_msg.data = self.runik(msg.data)
-        print('Received: {} on topic: {}'.format(msg.data, topic))
+        if self.print_to_console:
+            print('Received: {}'.format(msg.data))
+            print('Publishing: {}'.format(self.pub_msg.data))
         self.publisher.publish(self.pub_msg)
 
     def runik(self, xy):

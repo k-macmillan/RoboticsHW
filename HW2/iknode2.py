@@ -1,5 +1,4 @@
 from ROSwrapper.rosnode import RosNode             # Base class
-# import matplotlib.pyplot as plt
 
 
 class IkNode2(RosNode):
@@ -10,17 +9,12 @@ class IkNode2(RosNode):
         super(IkNode2, self).__init__(**kwargs)
 
     def subscribe(self, topic, msg):
-        print('Received: {} on topic: {}'.format(msg.data, topic))
-        # print()
-        # print((msg.data.__str__.__doc__))
-
-    def runik(self, xy):
-        return self.obj.getik(xy)
+        if self.print_to_console:
+            print('Received: {} on topic: {}'.format(msg.data, topic))
+        if topic == '/physData':
+            self.obj.append_plot_data_ik(msg.data)
+        elif topic == '/thetaData':
+            self.obj.append_plot_data_fk(self.runfk(msg.data))
 
     def runfk(self, thetas):
         return self.obj.getfk(thetas)
-
-# Write a program that subscribes to both /physData and /thetaData.
-# The program should plug the angles into the forward kinematics and
-# check against the data in /physData.
-# It should plot the original curve in green and the “check” in blue.

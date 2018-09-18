@@ -34,7 +34,8 @@ class twolink():
                           sub_chan='/physData',
                           pub_data_type=Float32MultiArray,
                           pub_chan='/thetaData',
-                          pub_data=self.theta))
+                          pub_data=self.theta,
+                          print_to_console=True))
         nc.run()
 
     def getik(self, xy):

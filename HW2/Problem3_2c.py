@@ -4,6 +4,7 @@ from ROSwrapper.nodecontrol import NodeControl  # ROS2 controller
 from Problem3_2a import line1                   # Line generator
 from iknode import IkNode
 from iknode2 import IkNode2
+import matplotlib.pyplot as plt
 
 
 class twolink():
@@ -20,28 +21,33 @@ class twolink():
         self.index = 0
         self.pts = zip(path[0], path[1])
         self.theta = (0.0, 0.0)
+        self.plot_data_ik_x = []
+        self.plot_data_ik_y = []
+        self.plot_data_fk_x = []
+        self.plot_data_fk_y = []
+        self.showing_plot = False
 
         # ROS init
-        nc = NodeControl()
-        nc.addnode(IkNode(name='node_xy',
-                          obj=self,
-                          pub_data_type=Float32MultiArray,
-                          pub_chan='/physData',
-                          pub_rate=5,
-                          pub_data=self.pts))
-        nc.addnode(IkNode(name='node_theta_magic',
-                          obj=self,
-                          sub_data_type=Float32MultiArray,
-                          sub_chan='/physData',
-                          pub_data_type=Float32MultiArray,
-                          pub_chan='/thetaData',
-                          pub_data=self.theta))
-        nc.addnode(IkNode2(name='node_dual_sub',
-                           obj=self,
-                           sub_data_type=Float32MultiArray,
-                           sub_chan=('/physData', '/thetaData')))
+        self.nc = NodeControl()
+        self.nc.addnode(IkNode(name='node_xy',
+                               obj=self,
+                               pub_data_type=Float32MultiArray,
+                               pub_chan='/physData',
+                               pub_rate=5,
+                               pub_data=self.pts))
+        self.nc.addnode(IkNode(name='node_theta_magic',
+                               obj=self,
+                               sub_data_type=Float32MultiArray,
+                               sub_chan='/physData',
+                               pub_data_type=Float32MultiArray,
+                               pub_chan='/thetaData',
+                               pub_data=self.theta))
+        self.nc.addnode(IkNode2(name='node_dual_sub',
+                                obj=self,
+                                sub_data_type=Float32MultiArray,
+                                sub_chan=('/physData', '/thetaData')))
 
-        nc.run()
+        self.nc.run()
 
     def getik(self, xy):
         """ Calculates the inverse kinematics to determine the theta1 & theta2
@@ -72,11 +78,22 @@ class twolink():
             self.a1 * np.sin(theta1)
         return x, y
 
-    # def plot(self, funct, show=True):
-    #     """ Adds a function to the plot and shows it or not """
-    #     plt.plot(funct[0], funct[1])
-    #     if show:
-    #         plt.show()
+    def append_plot_data_ik(self, data):
+        if len(self.plot_data_ik_x) < 100:
+            self.plot_data_ik_x.append(data[0])
+            self.plot_data_ik_y.append(data[1])
+            plt.scatter(self.plot_data_ik_x, self.plot_data_ik_y, c='g')
+
+    def append_plot_data_fk(self, data):
+        if len(self.plot_data_fk_x) < 100:
+            self.plot_data_fk_x.append(data[0])
+            self.plot_data_fk_y.append(data[1])
+            plt.scatter(self.plot_data_fk_x, self.plot_data_fk_y, c='b')
+        elif not self.showing_plot:
+            self.showing_plot = True
+            plt.title('Verifying Workspace Points')
+            plt.show()
+            print('Press \"ctrl\" + \"c\" to exit')
 
 
 def main():

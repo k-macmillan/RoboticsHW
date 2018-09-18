@@ -8,11 +8,10 @@ class IkNode(RosNode):
     def __init__(self, **kwargs):
         super(IkNode, self).__init__(**kwargs)
 
-    def sub_pub(self, msg):
+    def sub_pub(self, topic, msg):
         self.pub_msg.data = self.runik(msg.data)
-        # print('Node: {} theta points: {}'.format(self.name, self.pub_msg.data))
+        print('Received: {} on topic: {}'.format(msg.data, topic))
         self.publisher.publish(self.pub_msg)
-
 
     def runik(self, xy):
         return self.obj.getik(xy)

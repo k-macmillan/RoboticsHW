@@ -95,7 +95,7 @@ class twolink():
             self.showing_plot = True
             plt.title('Verifying Workspace Points')
             plt.show()
-            self.s_plot.savefig('Problem3_2c.svg', format='svg', dpi=800)
+            self.s_plot.savefig('Problem3_2c.svg', format='svg', dpi=1200)
             print('Press \"ctrl\" + \"c\" to exit')
 
 

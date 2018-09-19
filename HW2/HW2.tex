@@ -53,6 +53,7 @@ emphstyle={\color{self}\slshape},
 
 
 \usepackage{pdfpages}
+\usepackage{graphicx}  % For PNG
 
 % Give Table of Contents Hyperlinks
 \usepackage{hyperref}
@@ -128,6 +129,13 @@ This code assumes you have downloaded \href{https://github.com/macattackftw/ROSw
 \newpage
 \section{\textbf{Problem 4.13}}
 \lstinputlisting[language=Python]{Problem4_13.py}
+Unfortunately Veranda and/or ROS2 (rclpy) has some sort of issue where even when rclpy is shut down topics persist. Nothing is shown in the hidden topic list but they are there. This made simulation near impossible because I had to restart my computer to reset the robot. Here is and example of what happens if you kill the program (as demonstrated in the code) and then try to start it back up after a few minutes:
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=2.0]{VerandaIssue.png}
+\caption{Simulation Issues}
+\end{figure}
 
 
 \newpage

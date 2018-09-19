@@ -14,7 +14,7 @@ class DiffDrive():
         self.L = L
         self.pub_rate = hz
         self.time_step = 1.0 / hz
-        t = np.arange(start, end + self.time_step, self.time_step)  # inclusive with end
+        t = np.arange(start, end + self.time_step, self.time_step)
         self.phi_1 = 2.0 + 2.0 * np.exp(-t)
         self.phi_2 = 2.0 + np.exp(-2.0 * t)
         self.phi_data = zip(self.phi_1, self.phi_2)
@@ -85,12 +85,16 @@ class DiffDrive():
             self.plot_data_y.append(y)
         elif not self.showing_plot:
             self.showing_plot = True
-            plt.scatter(self.plot_data_x, self.plot_data_y, label='Position')
+            plt.scatter(self.plot_data_x,
+                        self.plot_data_y,
+                        label='Position')
             plt.xlabel('x position')
             plt.ylabel('y position')
             plt.title('Robot Path')
             plt.show()
-            self.s_plot.savefig('Problem4_3c.svg', format='svg', dpi=1200)
+            self.s_plot.savefig('Problem4_3c.pdf',
+                                format='pdf',
+                                dpi=1200)
             print('Press \"ctrl\" + \"c\" to exit')
 
 

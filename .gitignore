@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# pdf stuff
+.aux
+.log
+.out
+.toc

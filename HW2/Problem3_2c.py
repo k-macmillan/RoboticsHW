@@ -2,14 +2,15 @@ import numpy as np                              # Numerical library
 from std_msgs.msg import Float32MultiArray      # Message type
 from ROSwrapper.nodecontrol import NodeControl  # ROS2 controller
 from Problem3_2a import line1                   # Line generator
-from iknode import IkNode
-from iknode2 import IkNode2
-import matplotlib.pyplot as plt
+from iknode import IkNode                       # Derived RosNode
+from iknode2 import IkNode2                     # Derived RosNode
+import matplotlib.pyplot as plt                 # To plot data points
 
 
 class twolink():
-    """ This class is meant for fk and ik operations around a 2-link manipulator.
-        This was updated from problem 10 to allow for starting theta values.
+    """ This class is meant for fk and ik operations around a 2-link
+        manipulator. This was updated from problem 10 to allow for 
+        starting theta values.
     """
 
     def __init__(self, length1, length2, path, rate):
@@ -51,8 +52,8 @@ class twolink():
         self.nc.run()
 
     def getik(self, xy):
-        """ Calculates the inverse kinematics to determine the theta1 & theta2
-            values
+        """ Calculates the inverse kinematics to determine the theta1
+            & theta2 values
         """
         x = xy[0]
         y = xy[1]
@@ -89,13 +90,21 @@ class twolink():
             self.plot_data_fk_x.append(data[0])
             self.plot_data_fk_y.append(data[1])
         elif not self.showing_plot:
-            plt.scatter(self.plot_data_ik_x, self.plot_data_ik_y, c='g', label='Workspace Points')
-            plt.scatter(self.plot_data_fk_x, self.plot_data_fk_y, c='b', label='Computed Workspace Points')
+            plt.scatter(self.plot_data_ik_x,
+                        self.plot_data_ik_y,
+                        c='g',
+                        label='Workspace Points')
+            plt.scatter(self.plot_data_fk_x,
+                        self.plot_data_fk_y,
+                        c='b',
+                        label='Computed Workspace Points')
             self.showing_plot = True
             plt.title('Verifying Workspace Points')
             plt.legend()
             plt.show()
-            self.s_plot.savefig('Problem3_2c.svg', format='svg', dpi=1200)
+            self.s_plot.savefig('Problem3_2c.pdf',
+                                format='pdf',
+                                dpi=1200)
             print('Press \"ctrl\" + \"c\" to exit')
 
 

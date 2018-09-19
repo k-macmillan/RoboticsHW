@@ -83,17 +83,17 @@ class twolink():
         if len(self.plot_data_ik_x) < 100:
             self.plot_data_ik_x.append(data[0])
             self.plot_data_ik_y.append(data[1])
-            plt.scatter(self.plot_data_ik_x, self.plot_data_ik_y, c='g')
 
     def append_plot_data_fk(self, data):
         if len(self.plot_data_fk_x) < 100:
             self.plot_data_fk_x.append(data[0])
             self.plot_data_fk_y.append(data[1])
-            plt.scatter(self.plot_data_fk_x, self.plot_data_fk_y, c='b')
-
         elif not self.showing_plot:
+            plt.scatter(self.plot_data_ik_x, self.plot_data_ik_y, c='g', label='Workspace Points')
+            plt.scatter(self.plot_data_fk_x, self.plot_data_fk_y, c='b', label='Computed Workspace Points')
             self.showing_plot = True
             plt.title('Verifying Workspace Points')
+            plt.legend()
             plt.show()
             self.s_plot.savefig('Problem3_2c.svg', format='svg', dpi=1200)
             print('Press \"ctrl\" + \"c\" to exit')

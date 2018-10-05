@@ -38,23 +38,22 @@ class RosController(object):
         """ Walks each node, removing timers and destroying the node """
         print('\nCleaning up...')
         self.shutdownOverride()
-        try:
-            for node in self.nodes:
-                name = node.get_name()
-                while (len(node.timers) > 0):
-                    timer = node.timers.pop()
-                    node.destroy_timer(timer)
-                    print('Timer destroyed for {} node...'.format(name))
-                node.destroy_node()
-                print('Destroyed {} node...'.format(name))
+        for node in self.nodes:
+            name = node.get_name()
 
-            self.executor.shutdown()
-            print('executor shut down...')
-            rclpy.shutdown()
-            print('rclpy shut down...')
-        except BaseException:
-            # Already shutdown
-            pass
+            # Clean up timers
+            while (len(node.timers) > 0):
+                timer = node.timers.pop()
+                node.destroy_timer(timer)
+                print('Timer destroyed for {} node...'.format(name))
+
+            node.destroy_node()
+            print('Destroyed {} node...'.format(name))
+
+        self.executor.shutdown()
+        print('executor shut down...')
+        rclpy.shutdown()
+        print('rclpy shut down...')
 
     def run(self):
         """ Runs all the nodes that have been added to the controller """

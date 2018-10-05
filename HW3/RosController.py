@@ -11,13 +11,16 @@ class RosController(object):
             pass
         self.executor = SingleThreadedExecutor()
         self.nodes = []
-        self.timers = []
 
     def makeNode(self, name):
         node = rclpy.create_node(name)
         self.nodes.append(node)
         print('{} node created...'.format(name))
         return node
+
+    def addTimer(self, node, time, callback):
+        node.create_timer(time, callback)
+        print('Timer created for {}...'.format(node.get_name()))
 
     def shutdownOverride(self):
         """ This method exists so that a derived class can shutdown properly"""
@@ -29,6 +32,10 @@ class RosController(object):
         try:
             for node in self.nodes:
                 name = node.get_name()
+                while (len(node.timers) > 0):
+                    timer = node.timers.pop()
+                    node.destroy_timer(timer)
+                    print('Timer destroyed for {} node...'.format(name))
                 node.destroy_node()
                 print('Destroyed {}...'.format(name))
 

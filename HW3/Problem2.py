@@ -21,6 +21,10 @@ class Problem2(RosController):
                                                  '/robot0/wheel_right')
         self.msg_wheels = Float32()
         self.setVel(2.0, 2.0)
+        self.addTimer(wheels, 0.1, self.wheel_callback)
+
+    def wheel_callback(self):
+        pass
 
     def setVel(self, left=None, right=None):
         if left is not None:

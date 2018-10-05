@@ -16,8 +16,7 @@
 #     Set heading towards goal
 # end while
 
-from std_msgs.msg import Float32
-from geometry_msgs.msg import Pose2D
+from std_msgs.msg import Float32, ByteMultiArray
 from RosController import *
 
 
@@ -25,7 +24,7 @@ class Problem2(RosController):
     def __init__(self):
         super(Problem2, self).__init__()
         self.setupWheels()
-        self.setupGPS()
+        self.setupBump()
 
     def shutdownOverride(self):
         """ Overriden shutdown function"""
@@ -34,9 +33,9 @@ class Problem2(RosController):
     def setupWheels(self):
         wheels = self.makeNode('Wheels')
         self.pub_left = wheels.create_publisher(Float32,
-                                                '/robot0/wheel_left')
+                                                '/basic_bug/wheel_left')
         self.pub_right = wheels.create_publisher(Float32,
-                                                 '/robot0/wheel_right')
+                                                 '/basic_bug/wheel_right')
         self.msg_wheels = Float32()
         self.setVel(2.0, 2.0)
 
@@ -48,15 +47,14 @@ class Problem2(RosController):
             self.msg_wheels.data = right
             self.pub_right.publish(self.msg_wheels)
 
-    def setupGPS(self):
-        gps = self.makeNode('GPS')
-        gps.create_subscription(Pose2D,
-                                '/robot0/GPS',
-                                self.gpsPublish)
+    def setupBump(self):
+        bump = self.makeNode('Bump')
+        self.pub_bump = bump.create_subscription(ByteMultiArray,
+                                                 '/basic_bug/touch',
+                                                 self.bumpCallback)
 
-    def gpsPublish(self, msg):
-        print('x,y:   {}, {}'.format(msg.x, msg.y))
-        print('theta: {}'.format(msg.theta))
+    def bumpCallback(self, msg):
+        print(msg.data)
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ class Problem2(RosController):
         self.setupGPS()
 
     def setupWheels(self):
-        wheels = makeNode('Wheels')
+        wheels = self.makeNode('Wheels')
         self.pub_left = wheels.create_publisher(Float32,
                                                 '/robot0/wheel_left')
         self.pub_right = wheels.create_publisher(Float32,
@@ -27,10 +27,10 @@ class Problem2(RosController):
             self.pub_right.publish(self.msg_wheels)
 
     def setupGPS(self):
-        makeNode('GPS')
-        self.gps.create_subscription(Pose2D,
-                                     '/robot0/GPS',
-                                     self.gpsPublish)
+        gps = self.makeNode('GPS')
+        gps.create_subscription(Pose2D,
+                                '/robot0/GPS',
+                                self.gpsPublish)
 
     def gpsPublish(self, msg):
         print('x,y:   {}, {}'.format(msg.x, msg.y))

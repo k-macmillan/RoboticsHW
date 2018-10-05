@@ -9,6 +9,7 @@ class RosController(object):
             rclpy.init()
             print('rclpy initialized...')
         except BaseException:
+            # rclpy is already initialized
             pass
         self.executor = SingleThreadedExecutor()
         self.nodes = []

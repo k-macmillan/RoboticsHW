@@ -53,7 +53,7 @@ class RosController(object):
         self.executor.shutdown()
         print('executor shut down...')
         rclpy.shutdown()
-        print('rclpy shut down')
+        print('rclpy shut down\n')
 
     def run(self):
         """ Runs all the nodes that have been added to the controller """

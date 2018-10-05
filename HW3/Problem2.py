@@ -1,3 +1,21 @@
+# Basic motion planning algorithm:
+#
+# Set heading towards goal
+# while Not arrived at goal do
+#     while No obstacle in front do
+#         Move forward
+#     end while
+#     count = 0
+#     while count <= N do
+#         while Obstacle in front do
+#             Turn right
+#         end while
+#         Move forward
+#         incr count
+#     end while
+#     Set heading towards goal
+# end while
+
 from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose2D
 from RosController import *
@@ -21,10 +39,6 @@ class Problem2(RosController):
                                                  '/robot0/wheel_right')
         self.msg_wheels = Float32()
         self.setVel(2.0, 2.0)
-        self.addTimer(wheels, 1, self.wheel_callback)
-
-    def wheel_callback(self):
-        pass
 
     def setVel(self, left=None, right=None):
         if left is not None:

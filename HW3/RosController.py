@@ -1,5 +1,4 @@
 import rclpy
-from rclpy.node import Node
 from rclpy.executors import SingleThreadedExecutor
 
 
@@ -15,7 +14,7 @@ class RosController(object):
         self.timers = []
 
     def makeNode(self, name):
-        node = Node(name)
+        node = rclpy.create_node(name)
         self.nodes.append(node)
         print('{} node created...'.format(name))
         return node

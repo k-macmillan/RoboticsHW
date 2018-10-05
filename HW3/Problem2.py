@@ -9,6 +9,10 @@ class Problem2(RosController):
         self.setupWheels()
         self.setupGPS()
 
+    def shutdownOverride(self):
+        """ Overriden shutdown function"""
+        self.setVel(0.0, 0.0)
+
     def setupWheels(self):
         wheels = self.makeNode('Wheels')
         self.pub_left = wheels.create_publisher(Float32,

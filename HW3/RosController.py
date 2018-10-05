@@ -19,10 +19,14 @@ class RosController(object):
         print('{} node created...'.format(name))
         return node
 
+    def shutdownOverride(self):
+        """ This method exists so that a derived class can shutdown properly"""
+        pass
+
     def __shutdown(self):
         print('\nCleaning up...')
+        self.shutdownOverride()
         try:
-            self.setVel(0.0, 0.0)
             for node in self.nodes:
                 name = node.get_name()
                 node.destroy_node()

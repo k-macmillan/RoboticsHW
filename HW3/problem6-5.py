@@ -123,7 +123,7 @@ class diffdrive():
         plt.ylabel('y position')
         plt.title('Problem 5c')
         plt.plot(self.noise_x, self.noise_y, 'b-', self.x, self.y, 'r.')
-        plt.xlim(-10, 90)
+        plt.xlim(-20, 100)
         plt.ylim(-20, 80)
         self.plot.savefig('p6-5-c.pdf',
                           format='pdf',
@@ -141,20 +141,15 @@ class diffdrive():
         angle = 180 * np.arctan2(evec[0, 1], evec[0, 0]) / np.pi
         # create ellipse
         ell = Ellipse((np.mean(self.noise_x), np.mean(self.noise_y)),
-                      eval[0], eval[1], angle)
-        #  make the ellipse subplot
-
-        ax = self.plot.add_subplot(111, aspect='equal')
-        ell.set_clip_box(ax.bbox)
-        ell.set_alpha(0.1)
-        ell.set_facecolor(np.random.rand(3))
-        ax.add_artist(ell)
-        # a = plt.subplot(111, aspect='equal')
-        # ell.set_alpha(0.1)      # make the ellipse lighter
-        # a.add_artist(ell)       # add this to the plot
+                      width=eval[0],
+                      height=eval[1],
+                      angle=angle)
+        a = plt.subplot(111, aspect='equal')
+        ell.set_alpha(0.3)      # make the ellipse lighter
+        a.add_artist(ell)       # add this to the plot
+        plt.xlim(-20, 100)
+        plt.ylim(-20, 100)
         plt.plot(self.noise_x, self.noise_y)
-        # plt.xlim(-10, 90)
-        # plt.ylim(-20, 80)
         self.makeplot()
 
     def run(self):

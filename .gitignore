@@ -108,3 +108,8 @@ venv.bak/
 *.log
 *.out
 *.toc
+
+# Virtual Environments
+bin/
+include/
+pip-selfcheck.json

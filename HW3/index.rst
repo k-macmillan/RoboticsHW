@@ -92,3 +92,14 @@ Snakes do not have legs yet they move through a series of `vector motions <https
 
 Snake motion is somewhat similar to mechanum wheel motion in that the direction of motion is not parallel to the direction of force. Slithering robots require several points to push from in opposing directions in order to generate forward thrust. One of the primary benefits of a robot capable of slithering is that it can be fit into much smaller spaces than a wheeled robot of similar size. The ability to bend corners allows for exploration of smaller spaces. 
 
+
+Hopping
+=================
+
+Another form of locomotion is hopping, such as how a kangaroo moves around. One company, `Festo <https://www.festo.com/cms/en-us_us/index.htm>`_, has built a `robotic kangaroo <https://www.youtube.com/watch?time_continue=66&v=mWiNlWk1Muw>`_ that conserves energy as it hops which is an essential part of any system that wishes to implement a form of hopping locomotion. To navigate a hopping robot there must be pivot structures in the feet so the hoping force can be applied in a different orientation. Also, for terrain navigation it has a parabolic movement, meaning you have to ensure there are no obstacles in the parabolic arc while path planning. A robot like this may be ideal in low-gravity situations.
+
+
+Conclusion
+=================
+
+There are a variety of "non-standard" options for robot locomotion, each with their own challenges and benefits. It is important to be aware of options prior to making a decision for your robotic solution. 

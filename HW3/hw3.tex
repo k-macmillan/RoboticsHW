@@ -2,7 +2,7 @@
 \usepackage{pdfpages}
 \usepackage{graphicx}  % For PNG
 \usepackage[left=2cm, right=2cm, top=2cm]{geometry}
-
+\usepackage{minted}
 % Give Table of Contents Hyperlinks
 \usepackage{hyperref}
 \hypersetup{
@@ -60,6 +60,46 @@ Figure \ref{fig:6.5.a} shows the required plot.
 
 \newpage
 \noindent Figure \ref{fig:6.5.b} shows the data points that were saved.
+The code is as follows:
+\begin{minted}{python}
+def ddstep(self, xc, yc, qc, r, l, dt, w1, w2):
+    xn = xc + (r * dt / 2.0) * (w1 + w2) * np.cos(qc)
+    yn = yc + (r * dt / 2.0) * (w1 + w2) * np.sin(qc)
+    qn = qc + (r * dt / (2.0 * l)) * (w1 - w2)
+    return (xn, yn, qn)
+
+def d():
+    runs = 100
+    iterations = int(5.0 / dt + 1)
+    x = []
+    y = []
+    for i in range(runs):
+        xerr = np.random.normal(mu, sigma, iterations)
+        yerr = np.random.normal(mu, sigma, iterations)
+        j = 0
+        while (t < 5.0 - dt):
+            xc, yc, qc = ddstep(xc + xerr[j],
+                                yc + yerr[j],
+                                qc,
+                                r,
+                                L,
+                                dt,
+                                w1 * t * t,
+                                w2 * t)
+            t = t + dt
+            j += 1
+
+        x.append(xc)
+        y.append(yc)
+
+    f = open("problem6-5-b.txt", "w")
+    f.write('x, y\n')
+    for i in range(len(x)):
+        x = str(x[i])
+        y = str(y[i])
+        f.write(x + ' ' + y + '\n')
+
+\end{minted}
 
 \begin{figure}[h]
     \centering

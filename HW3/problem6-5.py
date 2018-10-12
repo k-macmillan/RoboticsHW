@@ -93,6 +93,7 @@ class diffdrive():
                           format='pdf',
                           dpi=1200)
         self.makeplot()
+
         f = open("problem6-5-b.txt", "w")
         f.write('x, y\n')
         for i in range(len(self.noise_x)):
@@ -135,7 +136,10 @@ class diffdrive():
         a.add_artist(ell)       # add this to the plot
         plt.xlim(-20, 100)
         plt.ylim(-20, 100)
-        plt.scatter(self.noise_x, self.noise_y)
+        plt.plot(self.noise_x, self.noise_y, 'b.')
+        self.plot.savefig('p6-5-d.pdf',
+                          format='pdf',
+                          dpi=1200)
         self.makeplot()
 
     def run(self):
@@ -149,9 +153,9 @@ class diffdrive():
     def makeplot(self):
         plt.show()
         plt.gcf().clear()
+        self.plot = plt.figure()
 
 
 if __name__ == '__main__':
     p2 = diffdrive()
     p2.run()
-    # p2.d()

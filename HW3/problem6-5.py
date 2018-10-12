@@ -10,6 +10,9 @@ class diffdrive():
         self.reset()
         self.plot = plt.figure()
 
+        self.noise_x = []
+        self.noise_y = []
+
     def reset(self):
         self.xc = 0.0
         self.yc = 0.0
@@ -24,8 +27,6 @@ class diffdrive():
         self.w2 = 0.5
         self.x = []
         self.y = []
-        self.noise_x = []
-        self.noise_y = []
 
     def ddstep(self, xc, yc, qc, r, l, dt, w1, w2):
         xn = xc + (r * dt / 2.0) * (w1 + w2) * np.cos(qc)
@@ -92,37 +93,22 @@ class diffdrive():
                           format='pdf',
                           dpi=1200)
         self.makeplot()
+        f = open("problem6-5-b.txt", "w")
+        f.write('x, y\n')
+        for i in range(len(self.noise_x)):
+            x = str(self.noise_x[i])
+            y = str(self.noise_y[i])
+            f.write(x + ' ' + y + '\n')
 
     def c(self, mu, sigma):
         self.reset()
-        iterations = int(5.0 / self.dt + 1)
-        xerr = np.random.normal(mu, sigma, iterations)
-        yerr = np.random.normal(mu, sigma, iterations)
-        x = []
-        y = []
-        i = 0
-        while (self.t < 5.0 - self.dt):
-            self.xc, self.yc, self.qc = self.ddstep(self.xc + xerr[i],
-                                                    self.yc + yerr[i],
-                                                    self.qc,
-                                                    self.r,
-                                                    self.L,
-                                                    self.dt,
-                                                    self.w1 * self.t * self.t,
-                                                    self.w2 * self.t)
-            self.t = self.t + self.dt
-            x.append(self.xc)
-            y.append(self.yc)
-            i += 1
 
         self.a(plot=False)
-        self.noise_x = x
-        self.noise_y = y
 
         plt.xlabel('x position')
         plt.ylabel('y position')
         plt.title('Problem 5c')
-        plt.plot(self.noise_x, self.noise_y, 'b-', self.x, self.y, 'r.')
+        plt.plot(self.x, self.y, 'b-', self.noise_x, self.noise_y, 'r.')
         plt.xlim(-20, 100)
         plt.ylim(-20, 80)
         self.plot.savefig('p6-5-c.pdf',
@@ -145,18 +131,18 @@ class diffdrive():
                       height=eval[1],
                       angle=angle)
         a = plt.subplot(111, aspect='equal')
-        ell.set_alpha(0.3)      # make the ellipse lighter
+        ell.set_alpha(0.2)      # make the ellipse lighter
         a.add_artist(ell)       # add this to the plot
         plt.xlim(-20, 100)
         plt.ylim(-20, 100)
-        plt.plot(self.noise_x, self.noise_y)
+        plt.scatter(self.noise_x, self.noise_y)
         self.makeplot()
 
     def run(self):
         self.a()
-        self.b('Problem 5b Default', 'p6-5-b-default.pdf', mu=0.0, sigma=0.3)
-        self.b('Problem 5b Good', 'p6-5-b-good.pdf', mu=0.0, sigma=0.1)
-        self.b('Problem 5b Great', 'p6-5-b-great .pdf', mu=0.0, sigma=0.01)
+        self.b('Problem 5b', 'p6-5-b.pdf', mu=0.0, sigma=0.3)
+        # self.b('Problem 5b Good', 'p6-5-b-good.pdf', mu=0.0, sigma=0.1)
+        # self.b('Problem 5b Great', 'p6-5-b-great .pdf', mu=0.0, sigma=0.01)
         self.c(0.0, 0.3)
         self.d()
 

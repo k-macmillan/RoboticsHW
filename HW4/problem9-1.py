@@ -194,34 +194,28 @@ def sanityCheck(land_plot, ax):
 
 
 if __name__ == '__main__':
+    sanity = True
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     land_plot = Plot()
-    # sanityCheck(land_plot, ax)
-    land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))
-    land_plot.addBeacon(Beacon(120, 703, 771, 843, color='g'))
-    land_plot.addBeacon(Beacon(938, 871, 583, 436, color='b'))
-    land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))  # this one?
-    land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
+    if sanity:
+        sanityCheck(land_plot, ax)
+    else:
+        land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))
+        land_plot.addBeacon(Beacon(120, 703, 771, 843, color='g'))
+        land_plot.addBeacon(Beacon(938, 871, 583, 436, color='b'))
+        land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))  # this one?
+        land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
 
-    # land_plot.printAttribs()
-    # print(land_plot.findRobot((land_plot.a, land_plot.b), land_plot.beacons))
+        # land_plot.printAttribs()
+        # print(land_plot.findRobot()
 
-    ax.set_xlim(-200, 1200)
-    ax.set_ylim(-200, 1200)
-    ax.set_zlim(-200, 1200)
+        ax.set_xlim(-200, 1200)
+        ax.set_ylim(-200, 1200)
+        ax.set_zlim(-200, 1200)
     ax.set_aspect('equal')
     plt.xlabel('x position')
     plt.ylabel('y position')
-    # plt.xlim(0)
-    # plt.ylim(0)
-
-    # coords = getCoords(a, b, c, d, e)
-    x = 0
-    y = 0
-    z = 0
-    [_.calcError(x, y, z) for _ in land_plot.beacons]
-    # [print(_.E) for _ in points]
 
     plt.show()
     fig.savefig('problem9-1.pdf',

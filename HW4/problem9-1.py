@@ -17,10 +17,15 @@ class Point():
         return Point(self.x - other.x, self.y - other.y, self.z - other.z)
 
     def __str__(self):
-        return '{},{},{}'.format(self.x, self.y, self.z)
+        return '{}, {}, {}'.format(self.x, self.y, self.z)
+
+    def midpoint(self, other):
+        return Point((self.x + other.x) / 2.0,
+                     (self.y + other.y) / 2.0,
+                     (self.z + other.z) / 2.0)
 
     def printPoint(self):
-        print('{},{},{}'.format(self.x, self.y, self.z))
+        print(str(self))
 
 
 class Beacon():
@@ -52,13 +57,13 @@ class Beacon():
         self.E = np.abs(np.sqrt(x * x + y * y + z * z) - self.r)
 
     def onBlock(self, a, b):
-        """ This is completely wrong and requires overhaul
+        """ Detects if this block (a,b) is within the beacon's radius
+            https://yal.cc/rectangle-circle-intersection-test/
         """
-        if (((a.x <= self.x_min <= b.x) or (a.x <= self.x_max <= b.x)) and
-           ((a.y <= self.y_min <= b.y) or (a.y <= self.y_max <= b.y)) and
-           ((a.z <= self.z_min <= b.z) or (a.z <= self.z_max <= b.z))):
-            return True
-        return False
+        dx = self.c.x - max(a.x, min(self.c.x, b.x))
+        dy = self.c.y - max(a.y, min(self.c.y, b.y))
+        dz = self.c.z - max(a.z, min(self.c.z, b.z))
+        return (dx * dx + dy * dy + dz * dz) <= (self.r * self.r)
 
     def __setMinMax(self):
         self.x_min = self.c.x - self.r
@@ -92,6 +97,7 @@ class Plot():
         self.a = Point()
         self.b = Point()
         self.depth = 0
+        self.robot_loc = Point()
 
     def addBeacon(self, b):
         self.beacons.append(b)
@@ -127,10 +133,15 @@ class Plot():
         b.printPoint()
 
     def findRobot(self):
-        self.depth = 0
-        return self.__checkGrids((self.a, self.b), self.beacons)
+        midp = self.__checkGrids((self.a, self.b), 0)
+        if midp[1] is not None:
+            self.robot_loc = midp[1][0].midpoint(midp[1][1])
+            print('\nRobot at:')
+            self.robot_loc.printPoint()
+        else:
+            print('\nRobot not found!')
 
-    def __checkGrids(self, pts, beacons):
+    def __checkGrids(self, pts, depth):
         """ Recursive function that checks 4 quadrants for a circle
             intersection. If an intersection is found it counts that up. After
             all intersections have been counted the section with the most is
@@ -141,66 +152,115 @@ class Plot():
         # For clarity:
         a = Point(pts[0].x, pts[0].y, pts[0].z)
         b = Point(pts[1].x, pts[1].y, pts[1].z)
+        quadrants = 8
 
-        grid = [0] * 4
+        grid = [0] * quadrants
         x_mid = ((b.x - a.x) / 2.0) + a.x
         y_mid = ((b.y - a.y) / 2.0) + a.y
+        z_mid = ((b.z - a.z) / 2.0) + a.z
         ab_list = []
-        ab_list.append((a, Point(x_mid, y_mid, b.z)))
-        ab_list.append((Point(a.x, y_mid, a.z), Point(x_mid, b.y, b.z)))
-        ab_list.append((Point(x_mid, a.y, a.z), Point(b.x, y_mid, b.z)))
-        ab_list.append((Point(x_mid, y_mid, a.z), b))
+        # ab_list.append((a, Point(x_mid, y_mid, b.z)))
+        # ab_list.append((Point(a.x, y_mid, a.z), Point(x_mid, b.y, b.z)))
+        # ab_list.append((Point(x_mid, a.y, a.z), Point(b.x, y_mid, b.z)))
+        # ab_list.append((Point(x_mid, y_mid, a.z), b))
 
-        for asdf in ab_list:
-            print(str(asdf[0]) + ' ' + str(asdf[1]))
-        # exit()
-        for b in beacons:
+        # This was not easy to ensure no fat fingering
+        ab_list.append((a, Point(x_mid, y_mid, z_mid)))
+        ab_list.append((Point(a.x, y_mid, a.z), Point(x_mid, b.y, z_mid)))
+        ab_list.append((Point(x_mid, a.y, a.z), Point(b.x, y_mid, z_mid)))
+        ab_list.append((Point(x_mid, y_mid, a.z), Point(b.x, b.y, z_mid)))
+
+        ab_list.append((Point(a.x, a.y, z_mid), Point(x_mid, y_mid, b.z)))
+        ab_list.append((Point(a.x, y_mid, z_mid), Point(x_mid, b.y, b.z)))
+        ab_list.append((Point(x_mid, a.y, z_mid), Point(b.x, y_mid, b.z)))
+        ab_list.append((Point(x_mid, y_mid, z_mid), b))
+
+        for b in self.beacons:
             # Check each block
-            for i in range(4):
+            for i in range(quadrants):
                 if b.onBlock(ab_list[i][0], ab_list[i][1]):
                     grid[i] += 1
 
-        max_indx = grid.index(max(grid))
-        best_pts = pts
-        if grid[max_indx] == len(beacons) and self.depth < 10:
-            self.depth += 1
-            base_check = self.__checkGrids(ab_list[max_indx], beacons)
-            if base_check is None:
-                return best_pts
+        best = []
+        depth_ary = []
+        print(grid)
+        for i in range(quadrants):
+            if grid[i] == len(self.beacons) and depth < 4:
+                ret_val = self.__checkGrids(ab_list[i], depth + 1)
+                # If we hit no more beacon overlaps
+                if ret_val[1] is None:
+                    print('Depth: ', depth)
+                    best.append(pts)
+                    depth_ary.append(depth)
+                else:
+                    depth_ary.append(ret_val[0])
+                    best.append(ret_val[1])
 
-        if best_pts == pts and self.depth < 10:
-            return None
+        if len(best) == 0:
+            return (depth, None)
         else:
-            return best_pts
+            idx = depth_ary.index(max(depth_ary))
+            return (depth_ary[idx], best[idx])
 
 
-def sanityCheck(land_plot, ax):
-    land_plot.addBeacon(Beacon(0, 0, 0, 10, color='r'))
-    land_plot.addBeacon(Beacon(20, 0, 0, 10, color='g'))
-    land_plot.addBeacon(Beacon(0, 20, 0, 10, color='b'))
-    land_plot.addBeacon(Beacon(0, 0, 20, 9.75, color='c'))
-    # land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))  # this one?
-    # land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
-    # land_plot.printAttribs()
+def sanityCheck2D(land_plot, ax):
+    """ Essentially a unit test that assumes the drone is at:
+        x = 2.32
+        y = 12.824
+        Should print those same points
+    """
+    land_plot.addBeacon(Beacon(0, 0, 0, 13.032166973, color='r'))
+    land_plot.addBeacon(Beacon(20, 0, 0, 21.841185316, color='g'))
+    land_plot.addBeacon(Beacon(0, 20, 0, 7.54170909, color='b'))
+    land_plot.addBeacon(Beacon(20, 20, 0, 19.080811723, color='c'))
     ax.set_xlim(-5, 25)
     ax.set_ylim(-5, 25)
     ax.set_zlim(-5, 25)
-    pts = land_plot.findRobot()
+    land_plot.findRobot()
+    makeplot('problem9-1_2D.pdf')
 
-    if pts is not None:
-        print('\n\nRobot at:')
-        pts[0].printPoint()
-        pts[1].printPoint()
+
+def sanityCheck3D(land_plot, ax):
+    """ Essentially a unit test that assumes the drone is at:
+        x = 2.32
+        y = 12.824
+        z = 11.68
+        Should print those same points
+    """
+    land_plot.addBeacon(Beacon(0, 0, 0, 17.500279312, color='r'))
+    land_plot.addBeacon(Beacon(20, 0, 0, 24.768120155, color='g'))
+    land_plot.addBeacon(Beacon(0, 20, 0, 13.903228977, color='b'))
+    land_plot.addBeacon(Beacon(20, 20, 0, 22.371852315, color='c'))
+    land_plot.addBeacon(Beacon(20, 20, 20, 20.815853958, color='k'))
+    ax.set_xlim(-5, 25)
+    ax.set_ylim(-5, 25)
+    ax.set_zlim(-5, 25)
+    land_plot.findRobot()
+    makeplot('problem9-1_3D.pdf')
+
+
+def makeplot(saveas=""):
+        plt.show()
+        if saveas != "":
+            fig.savefig(saveas,
+                        format='pdf',
+                        dpi=1200)
+        plt.gcf().clear()
 
 
 if __name__ == '__main__':
     sanity = True
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    land_plot = Plot()
+    ax.set_aspect('equal')
+    plt.xlabel('x position')
+    plt.ylabel('y position')
+
     if sanity:
-        sanityCheck(land_plot, ax)
+        # sanityCheck2D(Plot(), ax)
+        sanityCheck3D(Plot(), ax)
     else:
+        land_plot = Plot()
         land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))
         land_plot.addBeacon(Beacon(120, 703, 771, 843, color='g'))
         land_plot.addBeacon(Beacon(938, 871, 583, 436, color='b'))
@@ -213,11 +273,8 @@ if __name__ == '__main__':
         ax.set_xlim(-200, 1200)
         ax.set_ylim(-200, 1200)
         ax.set_zlim(-200, 1200)
-    ax.set_aspect('equal')
-    plt.xlabel('x position')
-    plt.ylabel('y position')
 
-    plt.show()
-    fig.savefig('problem9-1.pdf',
-                format='pdf',
-                dpi=1200)
+        plt.show()
+        fig.savefig('problem9-1.pdf',
+                    format='pdf',
+                    dpi=1200)

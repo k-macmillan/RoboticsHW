@@ -174,7 +174,7 @@ class Plot():
             return best_pts
 
 
-def sanityCheck(land_plot):
+def sanityCheck(land_plot, ax):
     land_plot.addBeacon(Beacon(0, 0, 0, 10, color='r'))
     land_plot.addBeacon(Beacon(20, 0, 0, 10, color='g'))
     land_plot.addBeacon(Beacon(0, 20, 0, 10, color='b'))
@@ -182,6 +182,9 @@ def sanityCheck(land_plot):
     # land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))  # this one?
     # land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
     # land_plot.printAttribs()
+    ax.set_xlim(-5, 25)
+    ax.set_ylim(-5, 25)
+    ax.set_zlim(-5, 25)
     pts = land_plot.findRobot()
 
     if pts is not None:
@@ -194,28 +197,24 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     land_plot = Plot()
-    sanityCheck(land_plot)
-    # land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))
-    # land_plot.addBeacon(Beacon(120, 703, 771, 843, color='g'))
-    # land_plot.addBeacon(Beacon(938, 871, 583, 436, color='b'))
-    # land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))  # this one?
-    # land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
+    # sanityCheck(land_plot, ax)
+    land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))
+    land_plot.addBeacon(Beacon(120, 703, 771, 843, color='g'))
+    land_plot.addBeacon(Beacon(938, 871, 583, 436, color='b'))
+    land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))  # this one?
+    land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
 
     # land_plot.printAttribs()
     # print(land_plot.findRobot((land_plot.a, land_plot.b), land_plot.beacons))
 
-    # ax.set_xlim(-200, 1200)
-    # ax.set_ylim(-200, 1200)
-    # ax.set_zlim(-200, 1200)
+    ax.set_xlim(-200, 1200)
+    ax.set_ylim(-200, 1200)
+    ax.set_zlim(-200, 1200)
     ax.set_aspect('equal')
     plt.xlabel('x position')
     plt.ylabel('y position')
     # plt.xlim(0)
     # plt.ylim(0)
-
-    ax.set_xlim(-5, 25)
-    ax.set_ylim(-5, 25)
-    ax.set_zlim(-5, 25)
 
     # coords = getCoords(a, b, c, d, e)
     x = 0

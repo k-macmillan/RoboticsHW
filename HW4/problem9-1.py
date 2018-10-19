@@ -17,7 +17,7 @@ class Point():
         return Point(self.x - other.x, self.y - other.y, self.z - other.z)
 
     def __str__(self):
-        return '{}, {}, {}'.format(self.x, self.y, self.z)
+        return '({}, {}, {})'.format(self.x, self.y, self.z)
 
     def midpoint(self, other):
         return Point((self.x + other.x) / 2.0,
@@ -94,6 +94,8 @@ class Plot():
         self.y_max = "-inf"
         self.z_min = "inf"
         self.z_max = "-inf"
+        self.max_depth = 0
+        self.max_checks = 0
         self.a = Point()
         self.b = Point()
         self.depth = 0
@@ -121,6 +123,12 @@ class Plot():
         self.b.x = self.x_max
         self.b.y = self.y_max
         self.b.z = self.z_max
+        max_len = max(self.x_max - self.x_min,
+                      self.y_max - self.y_min,
+                      self.z_max - self.z_min)
+        if max_len > 0:
+            self.max_depth = log2(max_len) + 2
+        self.max_checks = self.max_depth * 8  # quadrants
 
     def printAttribs(self):
         print(self.x_min)
@@ -159,10 +167,6 @@ class Plot():
         y_mid = ((b.y - a.y) / 2.0) + a.y
         z_mid = ((b.z - a.z) / 2.0) + a.z
         ab_list = []
-        # ab_list.append((a, Point(x_mid, y_mid, b.z)))
-        # ab_list.append((Point(a.x, y_mid, a.z), Point(x_mid, b.y, b.z)))
-        # ab_list.append((Point(x_mid, a.y, a.z), Point(b.x, y_mid, b.z)))
-        # ab_list.append((Point(x_mid, y_mid, a.z), b))
 
         # This was not easy to ensure no fat fingering
         ab_list.append((a, Point(x_mid, y_mid, z_mid)))
@@ -183,13 +187,17 @@ class Plot():
 
         best = []
         depth_ary = []
-        print(grid)
+        # print(grid)
         for i in range(quadrants):
-            if grid[i] == len(self.beacons) and depth < 4:
+            if grid[i] == len(self.beacons) and \
+               depth < self.max_depth and self.max_checks > 0:
+                self.max_checks -= 1
                 ret_val = self.__checkGrids(ab_list[i], depth + 1)
                 # If we hit no more beacon overlaps
                 if ret_val[1] is None:
-                    print('Depth: ', depth)
+                    # print('Depth: ', depth)
+                    # pts[0].printPoint()
+                    # pts[1].printPoint()
                     best.append(pts)
                     depth_ary.append(depth)
                 else:
@@ -203,7 +211,7 @@ class Plot():
             return (depth_ary[idx], best[idx])
 
 
-def sanityCheck2D(land_plot, ax):
+def sanityCheck2D(land_plot, ax, fig):
     """ Essentially a unit test that assumes the drone is at:
         x = 2.32
         y = 12.824
@@ -217,10 +225,10 @@ def sanityCheck2D(land_plot, ax):
     ax.set_ylim(-5, 25)
     ax.set_zlim(-5, 25)
     land_plot.findRobot()
-    makeplot('problem9-1_2D.pdf')
+    makeplot(fig, 'problem9-1_2D.pdf')
 
 
-def sanityCheck3D(land_plot, ax):
+def sanityCheck3D(land_plot, ax, fig):
     """ Essentially a unit test that assumes the drone is at:
         x = 2.32
         y = 12.824
@@ -236,20 +244,21 @@ def sanityCheck3D(land_plot, ax):
     ax.set_ylim(-5, 25)
     ax.set_zlim(-5, 25)
     land_plot.findRobot()
-    makeplot('problem9-1_3D.pdf')
+    makeplot(fig, 'problem9-1_3D.pdf')
 
 
-def makeplot(saveas=""):
+def makeplot(fig, saveas=""):
         plt.show()
         if saveas != "":
             fig.savefig(saveas,
                         format='pdf',
                         dpi=1200)
         plt.gcf().clear()
+        fig = plt.figure()
 
 
 if __name__ == '__main__':
-    sanity = True
+    sanity = False
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.set_aspect('equal')
@@ -257,8 +266,8 @@ if __name__ == '__main__':
     plt.ylabel('y position')
 
     if sanity:
-        # sanityCheck2D(Plot(), ax)
-        sanityCheck3D(Plot(), ax)
+        sanityCheck2D(Plot(), ax, fig)
+        # sanityCheck3D(Plot(), ax, fig)
     else:
         land_plot = Plot()
         land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))
@@ -268,7 +277,7 @@ if __name__ == '__main__':
         land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
 
         # land_plot.printAttribs()
-        # print(land_plot.findRobot()
+        land_plot.findRobot()
 
         ax.set_xlim(-200, 1200)
         ax.set_ylim(-200, 1200)

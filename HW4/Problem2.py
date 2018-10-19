@@ -17,7 +17,10 @@
 # end while
 
 from std_msgs.msg import Float32, ByteMultiArray
+from geometry_msgs.msg import Pose2D
 from RosController import *
+from struct import *
+from numpy import pi
 
 
 class Problem2(RosController):
@@ -25,6 +28,11 @@ class Problem2(RosController):
         super(Problem2, self).__init__()
         self.setupWheels()
         self.setupBump()
+        self.setupGPS()
+        self.goal = 0.0   # Set far away so we can move towards a theta
+        self.N = 3  # max bumps
+        self.bumps = 0
+        self.last_bump = -1
 
     def shutdownOverride(self):
         """ Overriden shutdown function"""
@@ -53,8 +61,42 @@ class Problem2(RosController):
                                                  '/basic_bug/touch',
                                                  self.bumpCallback)
 
+    def setupGPS(self):
+        gps = self.makeNode('GPS')
+        self.gps = gps.create_subscription(Pose2D,
+                                           '/basic_bug/GPS',
+                                           self.gpsCallback)
+
     def bumpCallback(self, msg):
-        print(msg.data)
+        hit_obj = False
+        for i in range(len(msg.data)):
+            hit = unpack('b', msg.data[i])[0]
+            if hit:
+                if self.last_bump != i:
+                    self.last_bump = i
+                    self.bumps = 0
+                hit_obj = True
+                print('Bumped: ', i)
+
+        if hit_obj and self.bumps < self.N:
+            self.bumps += 1
+            self.setVel(0.0, 2.0)
+        else:
+            self.bumps = 0
+            self.setVel(2.0, 2.0)
+
+    def gpsCallback(self, msg):
+        # print('x,y:   {}, {}'.format(msg.x, msg.y))
+        # print('theta: {}'.format(msg.theta))
+        if self.bumps == 0:
+            # we need to move to goal
+            wraps = int(msg.theta / (2 * pi))
+            theta = msg.theta - (wraps * 2 * pi)
+            # print('Moving to goal')
+            print('Theta: ', theta)
+            L = 2.0 - 0.1 * (self.goal - theta)
+            R = 2.0 + 0.1 * (self.goal - theta)
+            self.setVel(L, R)
 
 
 if __name__ == '__main__':

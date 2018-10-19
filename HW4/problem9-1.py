@@ -53,8 +53,10 @@ class Beacon():
         z = self.r * np.outer(np.ones(np.size(u)), np.cos(v)) + self.c.z
         ax.plot_wireframe(x, y, z, color=self.color)
 
-    def calcError(self, x, y, z):
-        self.E = np.abs(np.sqrt(x * x + y * y + z * z) - self.r)
+    def calcError(self, pt):
+        self.E = np.abs(np.sqrt(pt.x * pt.x + pt.y * pt.y + pt.z * pt.z) -
+                        self.r)
+        return self.E
 
     def onBlock(self, a, b):
         """ Detects if this block (a,b) is within the beacon's radius
@@ -146,6 +148,11 @@ class Plot():
             self.robot_loc = midp[1][0].midpoint(midp[1][1])
             print('\nRobot at:')
             self.robot_loc.printPoint()
+            E = 0.0
+            for b in self.beacons:
+                E += b.calcError(self.robot_loc)
+                print('Beacon error: ', b.E)
+            print('With an error of: ', E)
         else:
             print('\nRobot not found!')
 

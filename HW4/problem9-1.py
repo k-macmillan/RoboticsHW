@@ -2,6 +2,7 @@ from math import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+import queue
 
 
 class Point():
@@ -23,6 +24,11 @@ class Point():
         return Point((self.x + other.x) / 2.0,
                      (self.y + other.y) / 2.0,
                      (self.z + other.z) / 2.0)
+
+    def distSquared(self, other):
+        return (self.x - other.x) * (self.x - other.x) +\
+               (self.y - other.y) * (self.y - other.y) +\
+               (self.z - other.z) * (self.z - other.z)
 
     def printPoint(self):
         print(str(self))
@@ -46,8 +52,8 @@ class Beacon():
     def __addToPlot(self):
         ax.scatter(self.c.x, self.c.y, self.c.z, c=self.color)
         # Make data
-        u = np.linspace(0, 2 * np.pi, 30)
-        v = np.linspace(0, np.pi, 30)
+        u = np.linspace(0, 2 * np.pi, 60)
+        v = np.linspace(0, np.pi, 60)
         x = self.r * np.outer(np.cos(u), np.sin(v)) + self.c.x
         y = self.r * np.outer(np.sin(u), np.sin(v)) + self.c.y
         z = self.r * np.outer(np.ones(np.size(u)), np.cos(v)) + self.c.z
@@ -90,6 +96,7 @@ class Beacon():
 class Plot():
     def __init__(self):
         self.beacons = []
+        self.b_len = 0
         self.x_min = "inf"
         self.x_max = "-inf"
         self.y_min = "inf"
@@ -102,11 +109,13 @@ class Plot():
         self.b = Point()
         self.depth = 0
         self.robot_loc = Point()
+        self.q = queue.Queue()
 
     def addBeacon(self, b):
         self.beacons.append(b)
         # Running this every time since there shouldn't be that many beacons
         self.__fillMinMax()
+        self.b_len = len(self.beacons)
 
     def __fillMinMax(self):
         """ Quick and dirty fill of min/max, not efficient """
@@ -129,8 +138,13 @@ class Plot():
                       self.y_max - self.y_min,
                       self.z_max - self.z_min)
         if max_len > 0:
-            self.max_depth = log2(max_len) + 2
-        self.max_checks = self.max_depth * 8  # quadrants
+            self.max_depth = log2(max_len) * 2
+        # self.max_checks = self.max_depth * 8  # quadrants
+
+    def centerPoint(self, pt):
+        return Point(((pt[1].x - pt[0].x) / 2.0) + pt[0].x,
+                     ((pt[1].y - pt[0].y) / 2.0) + pt[0].y,
+                     ((pt[1].z - pt[0].z) / 2.0) + pt[0].z)
 
     def printAttribs(self):
         print(self.x_min)
@@ -143,7 +157,22 @@ class Plot():
         b.printPoint()
 
     def findRobot(self):
-        midp = self.__checkGrids((self.a, self.b), 0)
+        best_pts = []
+        best_depth = []
+        self.q.put(((self.a, self.b), 0))
+        while not self.q.empty():
+            pts, depth = self.q.get()
+            # print('\nab: {}   {}'.format(str(pts[0]), str(pts[1])))
+            # print('Depth: ', depth)
+            # exit()
+            box, box_depth = self.__checkGrids(pts, depth)
+            best_pts.append(box)
+            best_depth.append(box_depth)
+
+        # Find the index that made it deepest
+        idx = best_depth.index(max(best_depth))
+        midp = best_pts[idx]
+
         if midp[1] is not None:
             self.robot_loc = midp[1][0].midpoint(midp[1][1])
             print('\nRobot at:')
@@ -163,6 +192,7 @@ class Plot():
             dove into and the process repeats until it finds beacons - 1
             intersections.
         """
+        print('\nab: {}   {}'.format(str(pts[0]), str(pts[1])))
 
         # For clarity:
         a = Point(pts[0].x, pts[0].y, pts[0].z)
@@ -186,20 +216,84 @@ class Plot():
         ab_list.append((Point(x_mid, a.y, z_mid), Point(b.x, y_mid, b.z)))
         ab_list.append((Point(x_mid, y_mid, z_mid), b))
 
+        # Fill grid with hits
         for b in self.beacons:
             # Check each block
             for i in range(quadrants):
                 if b.onBlock(ab_list[i][0], ab_list[i][1]):
                     grid[i] += 1
 
+        # For each block with len(beacons) find the closest
+        # min_dist = float("inf")
+        # min_idx = -1
+        # for i in range(quadrants):
+        #     if grid[i] == len(self.beacons):
+        #         # Calculate center distances
+        #         cp = self.centerPoint(ab_list[i])
+        #         dist = 0.0
+        #         for b in self.beacons:
+        #             dist += cp.distSquared(b.c)
+        #         print('{} dist: {}'.format(i, dist))
+        #         if dist < min_dist:
+        #             min_dist = dist
+        #             min_idx = i
+
+        print('ab_list:')
+        for i in range(len(ab_list)):
+            print(str(grid[i]) + ': ' +
+                  str(ab_list[i][0]) +
+                  '   ' +
+                  str(ab_list[i][1]))
+        return (None, None)
+
+        # if depth < self.max_depth and min_idx != -1:
+        #     ret_val = self.__checkGrids(ab_list[min_idx], depth + 1)
+        # else:
+        #     ret_val = (None, pts)
+
+        # if ret_val[0] is None:
+        #     return (depth, pts)
+        # else:
+        #     return ret_val
+
+        # best = []
+        # depth_ary = []
+        # for i in range(quadrants):
+        #     if grid[i] == len(self.beacons) and\
+        #        depth < self.max_depth:  # and self.max_checks > 0:
+        #         ret_val = self.__checkGrids(ab_list[i], depth + 1)
+        #         # If we hit no more beacon overlaps
+        #         if ret_val[1] is None:
+        #             # print('Depth: ', depth)
+        #             # pts[0].printPoint()
+        #             # pts[1].printPoint()
+        #             best.append(pts)
+        #             depth_ary.append(depth)
+        #         else:
+        #             depth_ary.append(ret_val[0])
+        #             best.append(ret_val[1])
+
+        # if len(best) == 0:
+        #     return (depth, None)
+        # else:
+        #     idx = depth_ary.index(max(depth_ary))
+        #     return (depth_ary[idx], best[idx])
+
+        found = 0
+        for i in range(self.b_len):
+            if grid[i] == self.b_len:
+                found += 1
+
+        # Means we are not in a solution
+        if found == quadrants:
+            return (None, None)
+
         best = []
         depth_ary = []
-        # print(grid)
         for i in range(quadrants):
-            if grid[i] == len(self.beacons) and \
-               depth < self.max_depth and self.max_checks > 0:
-                self.max_checks -= 1
-                ret_val = self.__checkGrids(ab_list[i], depth + 1)
+            if grid[i] == self.b_len and\
+               depth < self.max_depth:  # and self.max_checks > 0:
+                self.q.put((ab_list[i], depth + 1))
                 # If we hit no more beacon overlaps
                 if ret_val[1] is None:
                     # print('Depth: ', depth)
@@ -242,11 +336,13 @@ def sanityCheck3D(land_plot, ax, fig):
         z = 11.68
         Should print those same points
     """
-    land_plot.addBeacon(Beacon(0, 0, 0, 17.500279312, color='r'))
-    land_plot.addBeacon(Beacon(20, 0, 0, 24.768120155, color='g'))
-    land_plot.addBeacon(Beacon(0, 20, 0, 13.903228977, color='b'))
-    land_plot.addBeacon(Beacon(20, 20, 0, 22.371852315, color='c'))
-    land_plot.addBeacon(Beacon(20, 20, 20, 20.815853958, color='k'))
+    # land_plot.addBeacon(Beacon(0, 0, 0, 17.500279312, color='r'))
+    # land_plot.addBeacon(Beacon(20, 0, 0, 24.768120155, color='g'))
+    # land_plot.addBeacon(Beacon(0, 20, 0, 13.903228977, color='b'))
+    # land_plot.addBeacon(Beacon(20, 20, 0, 22.371852315, color='c'))
+    # land_plot.addBeacon(Beacon(20, 20, 20, 20.815853958, color='k'))
+    land_plot.addBeacon(Beacon(0, 0, 0, 20.784609691, color='k'))
+    land_plot.addBeacon(Beacon(20, 20, 20, 13.856406461, color='r'))
     ax.set_xlim(-5, 25)
     ax.set_ylim(-5, 25)
     ax.set_zlim(-5, 25)
@@ -265,7 +361,7 @@ def makeplot(fig, saveas=""):
 
 
 if __name__ == '__main__':
-    sanity = False
+    sanity = True
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.set_aspect('equal')
@@ -273,8 +369,8 @@ if __name__ == '__main__':
     plt.ylabel('y position')
 
     if sanity:
-        sanityCheck2D(Plot(), ax, fig)
-        # sanityCheck3D(Plot(), ax, fig)
+        # sanityCheck2D(Plot(), ax, fig)
+        sanityCheck3D(Plot(), ax, fig)
     else:
         land_plot = Plot()
         land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))

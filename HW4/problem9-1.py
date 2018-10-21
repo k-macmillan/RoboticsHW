@@ -138,8 +138,7 @@ class Plot():
                       self.y_max - self.y_min,
                       self.z_max - self.z_min)
         if max_len > 0:
-            self.max_depth = log2(max_len) * 2
-        # self.max_checks = self.max_depth * 8  # quadrants
+            self.max_depth = log2(max_len) + 2
 
     def centerPoint(self, pt):
         return Point(((pt[1].x - pt[0].x) / 2.0) + pt[0].x,
@@ -165,16 +164,25 @@ class Plot():
             # print('\nab: {}   {}'.format(str(pts[0]), str(pts[1])))
             # print('Depth: ', depth)
             # exit()
-            box, box_depth = self.__checkGrids(pts, depth)
-            best_pts.append(box)
-            best_depth.append(box_depth)
+            self.__checkGrids(pts, depth)
+            best_pts.append(pts)
+            best_depth.append(depth)
 
         # Find the index that made it deepest
         idx = best_depth.index(max(best_depth))
         midp = best_pts[idx]
+        print('\nmidp: {}   {}'.format(str(midp[0]), str(midp[1])))
+        print('Depth: ', best_depth[idx])
+        print('Runs : ', len(best_depth))
+        count = 0
+        for i in range(len(best_depth)):
+            if best_depth[i] == best_depth[idx]:
+                count += 1
 
-        if midp[1] is not None:
-            self.robot_loc = midp[1][0].midpoint(midp[1][1])
+        print('At depth: ', count)
+
+        if midp[0] is not None:
+            self.robot_loc = midp[0].midpoint(midp[1])
             print('\nRobot at:')
             self.robot_loc.printPoint()
             E = 0.0
@@ -192,7 +200,7 @@ class Plot():
             dove into and the process repeats until it finds beacons - 1
             intersections.
         """
-        print('\nab: {}   {}'.format(str(pts[0]), str(pts[1])))
+        # print('\nab: {}   {}'.format(str(pts[0]), str(pts[1])))
 
         # For clarity:
         a = Point(pts[0].x, pts[0].y, pts[0].z)
@@ -238,13 +246,12 @@ class Plot():
         #             min_dist = dist
         #             min_idx = i
 
-        print('ab_list:')
-        for i in range(len(ab_list)):
-            print(str(grid[i]) + ': ' +
-                  str(ab_list[i][0]) +
-                  '   ' +
-                  str(ab_list[i][1]))
-        return (None, None)
+        # print('ab_list:')
+        # for i in range(len(ab_list)):
+        #     print(str(grid[i]) + ': ' +
+        #           str(ab_list[i][0]) +
+        #           '   ' +
+        #           str(ab_list[i][1]))
 
         # if depth < self.max_depth and min_idx != -1:
         #     ret_val = self.__checkGrids(ab_list[min_idx], depth + 1)
@@ -284,32 +291,14 @@ class Plot():
             if grid[i] == self.b_len:
                 found += 1
 
+        # print('Found: ', found)
         # Means we are not in a solution
         if found == quadrants:
             return (None, None)
 
-        best = []
-        depth_ary = []
         for i in range(quadrants):
-            if grid[i] == self.b_len and\
-               depth < self.max_depth:  # and self.max_checks > 0:
+            if grid[i] == self.b_len and depth < self.max_depth:
                 self.q.put((ab_list[i], depth + 1))
-                # If we hit no more beacon overlaps
-                if ret_val[1] is None:
-                    # print('Depth: ', depth)
-                    # pts[0].printPoint()
-                    # pts[1].printPoint()
-                    best.append(pts)
-                    depth_ary.append(depth)
-                else:
-                    depth_ary.append(ret_val[0])
-                    best.append(ret_val[1])
-
-        if len(best) == 0:
-            return (depth, None)
-        else:
-            idx = depth_ary.index(max(depth_ary))
-            return (depth_ary[idx], best[idx])
 
 
 def sanityCheck2D(land_plot, ax, fig):

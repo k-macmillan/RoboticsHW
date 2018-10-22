@@ -38,6 +38,7 @@ class Beacon():
     def __init__(self, x=0, y=0, z=0, d=0, color='b'):
         self.c = Point(x, y, z)
         self.r = d
+        self.r_sqr = self.r * self.r
         self.color = color
         self.E = float("inf")
         self.__setMinMax()
@@ -64,14 +65,38 @@ class Beacon():
                         self.r)
         return self.E
 
+    def getCorners(self, a, b):
+        points = [a]
+        points.append(Point(a.x, b.y, a.z))  # Top Front Left
+        points.append(Point(b.x, a.y, a.z))  # Bottom Front Right
+        points.append(Point(b.x, b.y, a.z))  # Top Front Right
+        points.append(Point(a.x, a.y, b.z))  # Bottom Back Left
+        points.append(Point(a.x, b.y, b.z))  # Top Back Left
+        points.append(Point(b.x, a.y, b.z))  # Bottom Back Right
+        points.append(b)
+
+        return points
+
     def onBlock(self, a, b):
-        """ Detects if this block (a,b) is within the beacon's radius
-            https://yal.cc/rectangle-circle-intersection-test/
-        """
-        dx = self.c.x - max(a.x, min(self.c.x, b.x))
-        dy = self.c.y - max(a.y, min(self.c.y, b.y))
-        dz = self.c.z - max(a.z, min(self.c.z, b.z))
-        return (dx * dx + dy * dy + dz * dz) <= (self.r * self.r)
+        """ Detects if this block (a,b) is intersected by the beacon's radius"""
+        pts_in_circle = 0
+        pts = self.getCorners(a, b)
+        for p in pts:
+            if p.distSquared(self.c) <= self.r_sqr:
+                pts_in_circle += 1
+
+        # If we found no points we need to check the edge case where a circle 
+        # intersects a face but does not pass through a corner
+        # https://yal.cc/rectangle-circle-intersection-test/
+        if pts_in_circle == 0:
+            dx = self.c.x - max(a.x, min(self.c.x, b.x))
+            dy = self.c.y - max(a.y, min(self.c.y, b.y))
+            dz = self.c.z - max(a.z, min(self.c.z, b.z))
+            return (dx * dx + dy * dy + dz * dz) <= (self.r * self.r)
+        else:
+            print('Points: ', pts_in_circle)
+            return pts_in_circle < 8
+        
 
     def __setMinMax(self):
         self.x_min = self.c.x - self.r
@@ -291,6 +316,8 @@ class Plot():
             if grid[i] == self.b_len:
                 found += 1
 
+        print(grid)
+        exit()
         # print('Found: ', found)
         # Means we are not in a solution
         if found == quadrants:

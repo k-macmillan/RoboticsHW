@@ -105,7 +105,9 @@ venv.bak/
 
 # pdf stuff
 *.aux
+*.lof
 *.log
+*.lot
 *.out
 *.toc
 

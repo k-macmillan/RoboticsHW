@@ -18,7 +18,7 @@
 \title{\textbf{Homework 4}}
 
 \author{MacMillan, Kyle}
-\date{October 19, 2018}
+\date{October 26, 2018}
 
 \begin{document}
 
@@ -47,12 +47,58 @@
 
 \setcounter{page}{1}
 \newpage
+\section{\textbf{Problem 5.2}}
+The meat and potatoes of this problem is in bump and gps callbacks, the 
+rest is filler but can be found \href{https://github.com/macattackftw/RoboticsHW/blob/master/HW4/Problem2.py}{here}. The environment used is shown in Figure \ref{fig:stuck1}.
+
+\begin{minted}{python}
+def bumpCallback(self, msg):
+    hit_obj = False
+    for i in range(len(msg.data)):
+        hit = unpack('b', msg.data[i])[0]
+        if hit != 0:
+            hit_obj = True
+
+    if hit_obj:
+        # Turn right
+        self.bumps += 1
+        self.setVel(0.0, 2.0)
+    else:
+        self.bumps = 0
+        self.setVel(2.0, 2.0)
+
+def gpsCallback(self, msg):
+    # we need to move to goal if we are not bumping a wall
+    if self.bumps == 0:
+        # Wraps deals with the robot if it spins around somehow
+        wraps = np.abs(int(msg.theta / (2 * np.pi)))
+        theta = np.fabs(msg.theta) - (wraps * 2 * np.pi)
+        beta = np.arctan2(self.goal[1] -
+                          msg.y, self.goal[0] -
+                          msg.x)
+        k = 0.25
+        alpha = beta - theta
+        w1 = 2.0 + k * alpha
+        w2 = 2.0 - k * alpha
+        self.setVel(w1, w2)
+
+\end{minted}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[pages=1]{stuck1}
+    \caption{Problem 5.2 Stuck Robot}
+    \label{fig:stuck1}
+\end{figure}
+
+\newpage
 \section{\textbf{Problem 9}}
 \subsection{Problem 9.1}
 Figure \ref{fig:9.1} shows the required plot. The robot location is:\\
 $x = 803.84497$\\
 $y = 485.52026$\\
 $z = 517.26977$\\
+
 With an error of $E = 2720.65$
 
 
@@ -81,9 +127,24 @@ distance of 250 meters.
 
 \section{\textbf{Problem 10}}
 \subsection{Problem 10.1}
-asdf
+\noindent$f = 0.8cm$\\
+$b = 30cm$\\
+$a = tan^-1 \big(\frac{z}{b-x}\big)$\\
+$u = \frac{fx}{z}$\\
+
+\noindent Given the above formulas we can say $a$ is in the range of: 
+$45 < a < 90$ and for $u$: $3 < u < 45$.
 
 \subsection{Probelm 10.2}
-asdf
+\noindent$e = 10\%$\\
+$v_1 = 0.2cm$\\
+$v_2 = 0.3cm$\\
+$z = \frac{fb}{v_1 + v_2}$\\
 
+\noindent Given the above formulas we can say that $f * b = 0.7 * 10 = 7$ but the range 
+of z is dependent on $v_1 + v_2$, or:\\
+$\frac{7}{0.18 + 0.27} <= z <= \frac{7}{0.22 + 0.33}$\\
+
+\noindent With zero error we would expect $z = 14$, on the low end we expect $z = 12.72$ 
+and on the upper end we expect $z = 15.56$, leaving an error of $3.7037\%$.
 \end{document}

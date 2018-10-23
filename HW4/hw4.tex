@@ -36,7 +36,6 @@
 \pagenumbering{roman}   % Set TOC page numbering to lowercase roman numerals
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% INTRO SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \hypersetup{
@@ -70,6 +69,7 @@ def bumpCallback(self, msg):
         self.bumps = 0
         self.setVel(2.0, 2.0)
 
+
 def gpsCallback(self, msg):
     # we need to move to goal if we are not bumping a wall
     if self.bumps == 0:
@@ -97,13 +97,10 @@ def gpsCallback(self, msg):
 \newpage
 \section{\textbf{Problem 9}}
 \subsection{Problem 9.1}
-Figure \ref{fig:9.1} shows the required plot. The robot location is:\\
-$x = 803.84497$\\
-$y = 485.52026$\\
-$z = 517.26977$\\
-
-With an error of $E = 2720.65$
-
+Figure \ref{fig:9.1} shows the required plot. The estimated robot location is:\\
+$x = 882.079427083333$\\
+$y = 443.766927083333$\\
+$z = 521.18359375$\\
 
 \begin{figure}[h]
     \centering
@@ -112,6 +109,94 @@ With an error of $E = 2720.65$
     \label{fig:9.1}
 \end{figure}
 
+This was obtained with a BFS octant descent. Each octant containing 
+an intersection with all beacon radii is added to a queue to be processed. If 
+an octant is processed it will be chopped up into 8 more octants and any of 
+those subdivisions will be processed. After we have either hit maximum depth 
+(capped at $2 * log_2(max\_length)$) or we fail to find an octant containing 
+all beacon radii, the queue will empty. After the queue empties we find the 
+maximum depth obtained and find all points that made it to that depth. The 
+centroid of those points is the likely location of the robot. 
+
+\newpage
+\begin{minted}{python}
+def findRobot(self):
+    best_pts = []
+    best_depth = []
+    self.q.put(((self.a, self.b), 0))
+    while not self.q.empty():
+        pts, depth = self.q.get()
+        self.checkGrids(pts, depth)
+        best_pts.append(pts)
+        best_depth.append(depth)
+
+    centroid = Point()
+
+    # Find the index that made it deepest and calculate the centroid
+    idx = best_depth.index(max(best_depth))
+    count = 0
+    for i in range(len(best_depth)):
+        if best_depth[i] == best_depth[idx]:
+            centroid += best_pts[i][0].midpoint(best_pts[i][1])
+            count += 1
+
+    if centroid != Point(0, 0, 0):
+        centroid.x = centroid.x / count
+        centroid.y = centroid.y / count
+        centroid.z = centroid.z / count
+
+        self.robot_loc = centroid
+        print('\nRobot at: {}'.format(str(self.robot_loc)))
+    else:
+        print('\nRobot not found!')
+\end{minted}
+
+\newpage
+\begin{minted}{python}
+def checkGrids(self, pts, depth):
+    # For clarity:
+    a = Point(pts[0].x, pts[0].y, pts[0].z)
+    b = Point(pts[1].x, pts[1].y, pts[1].z)
+    octants = 8
+
+    grid = [0] * octants
+    x_mid = ((b.x + a.x) / 2.0)
+    y_mid = ((b.y + a.y) / 2.0)
+    z_mid = ((b.z + a.z) / 2.0)
+    ab_list = []
+
+    # The 8 octants of pts a & b
+    ab_list.append((a, Point(x_mid, y_mid, z_mid)))
+    ab_list.append((Point(a.x, y_mid, a.z), Point(x_mid, b.y, z_mid)))
+    ab_list.append((Point(x_mid, a.y, a.z), Point(b.x, y_mid, z_mid)))
+    ab_list.append((Point(x_mid, y_mid, a.z), Point(b.x, b.y, z_mid)))
+
+    ab_list.append((Point(a.x, a.y, z_mid), Point(x_mid, y_mid, b.z)))
+    ab_list.append((Point(a.x, y_mid, z_mid), Point(x_mid, b.y, b.z)))
+    ab_list.append((Point(x_mid, a.y, z_mid), Point(b.x, y_mid, b.z)))
+    ab_list.append((Point(x_mid, y_mid, z_mid), b))
+
+    # Fill grid with hits
+    for b in self.beacons:
+        # Check each block
+        for i in range(octants):
+            if b.onBlock(ab_list[i][0], ab_list[i][1]):
+                grid[i] += 1
+    found = 0
+    for i in range(self.b_len):
+        if grid[i] == self.b_len:
+            found += 1
+
+    if found == octants:
+        return
+
+    for i in range(octants):
+        if grid[i] == self.b_len and depth < self.max_depth:
+            self.q.put((ab_list[i], depth + 1))
+\end{minted}
+
+
+\newpage
 \subsection{Problem 9.2}
 \noindent $\lambda = c * 10 MHz$\\
 $\lambda = 30\ meters$\\

@@ -130,6 +130,7 @@ class Plot():
             best_depth.append(depth)
 
         centroid = Point()
+        # print('Total recursions: ', len(best_depth))
 
         # Find the index that made it deepest and calculate the centroid
         idx = best_depth.index(max(best_depth))
@@ -139,6 +140,7 @@ class Plot():
                 centroid += best_pts[i][0].midpoint(best_pts[i][1])
                 count += 1.0
         # print('count at depth: ', count)
+
         if centroid != Point(0, 0, 0):
             centroid.x = centroid.x / count
             centroid.y = centroid.y / count
@@ -244,13 +246,12 @@ def makeplot(fig, saveas=""):
 
 
 def problem9(land_plot, ax, fig):
+    """Runs the beacon problem from the homework"""
     land_plot.addBeacon(Beacon(884, 554, 713, 222, color='r'))
     land_plot.addBeacon(Beacon(120, 703, 771, 843, color='g'))
     land_plot.addBeacon(Beacon(938, 871, 583, 436, color='b'))
-    land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))  # this one?
+    land_plot.addBeacon(Beacon(967, 653, 46, 529, color='c'))
     land_plot.addBeacon(Beacon(593, 186, 989, 610, color='m'))
-
-    # land_plot.printAttribs()
     land_plot.findRobot()
 
     ax.set_xlim(-200, 1200)

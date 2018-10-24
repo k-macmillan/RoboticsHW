@@ -29,7 +29,7 @@ class Problem2(RosController):
         self.setupWheels()
         self.setupBump()
         self.setupGPS()
-        self.goal = 0.0   # Set far away so we can move towards a theta
+        self.goal = (0.0, 20.0)   # Set far away so we can move towards a theta
         self.N = 3  # max bumps
         self.bumps = 0
         self.last_bump = -1
@@ -88,6 +88,7 @@ class Problem2(RosController):
     def gpsCallback(self, msg):
         # print('x,y:   {}, {}'.format(msg.x, msg.y))
         # print('theta: {}'.format(msg.theta))
+        # This is wrong
         if self.bumps == 0:
             # we need to move to goal
             wraps = int(msg.theta / (2 * pi))

@@ -111,9 +111,9 @@ $z = 521.18359375$\\
 
 This was obtained with a BFS octant descent. Each octant containing 
 an intersection with all beacon radii is added to a queue to be processed. If 
-an octant is processed it will be chopped up into 8 more octants and any of 
+an octant is processed it will be chopped up into 8 more octants and all of 
 those subdivisions will be processed. After we have either hit maximum depth 
-(capped at $2 * log_2(max\_length)$) or we fail to find an octant containing 
+(capped at $2 * log_2(max\_length)$) or we fail to find any octants containing 
 all beacon radii, the queue will empty. After the queue empties we find the 
 maximum depth obtained and find all points that made it to that depth. The 
 centroid of those points is the likely location of the robot. 
@@ -155,8 +155,8 @@ def findRobot(self):
 \begin{minted}{python}
 def checkGrids(self, pts, depth):
     # For clarity:
-    a = Point(pts[0].x, pts[0].y, pts[0].z)
-    b = Point(pts[1].x, pts[1].y, pts[1].z)
+    a = pts[0]
+    b = pts[1]
     octants = 8
 
     grid = [0] * octants

@@ -159,8 +159,8 @@ class Plot():
             intersections.
         """
         # For clarity:
-        a = Point(pts[0].x, pts[0].y, pts[0].z)
-        b = Point(pts[1].x, pts[1].y, pts[1].z)
+        a = pts[0]
+        b = pts[1]
         quadrants = 8
 
         grid = [0] * quadrants

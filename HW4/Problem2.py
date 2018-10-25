@@ -20,7 +20,7 @@ from std_msgs.msg import Float32, ByteMultiArray
 from geometry_msgs.msg import Pose2D
 from RosController import *
 from struct import *
-from numpy import pi
+from numpy import pi, arctan2
 
 
 class Problem2(RosController):
@@ -29,7 +29,7 @@ class Problem2(RosController):
         self.setupWheels()
         self.setupBump()
         self.setupGPS()
-        self.goal = (0.0, 20.0)   # Set far away so we can move towards a theta
+        self.goal = (0.0, 20.0)
         self.N = 3  # max bumps
         self.bumps = 0
         self.last_bump = -1
@@ -76,27 +76,32 @@ class Problem2(RosController):
                     self.last_bump = i
                     self.bumps = 0
                 hit_obj = True
-                print('Bumped: ', i)
+                # print('Bumped: ', i)
 
         if hit_obj and self.bumps < self.N:
             self.bumps += 1
-            self.setVel(0.0, 2.0)
+            self.setVel(0.0, 3.0)
         else:
             self.bumps = 0
-            self.setVel(2.0, 2.0)
+            self.setVel(3.0, 3.0)
 
     def gpsCallback(self, msg):
         # print('x,y:   {}, {}'.format(msg.x, msg.y))
-        # print('theta: {}'.format(msg.theta))
-        # This is wrong
+        # print('\nGPS theta: {}'.format(msg.theta))
         if self.bumps == 0:
             # we need to move to goal
-            wraps = int(msg.theta / (2 * pi))
-            theta = msg.theta - (wraps * 2 * pi)
-            # print('Moving to goal')
-            print('Theta: ', theta)
-            L = 2.0 - 0.1 * (self.goal - theta)
-            R = 2.0 + 0.1 * (self.goal - theta)
+            theta = msg.theta
+            twopi = 2 * pi
+            wraps = int(theta / twopi)
+            theta = theta - (wraps * twopi)
+            if theta < -pi:
+                theta = twopi + theta
+            k = 0.5
+
+            beta = arctan2(self.goal[1] - msg.y, self.goal[0] - msg.x) - pi / 2.0
+            alpha = beta - theta
+            L = 3.0 + k * alpha
+            R = 3.0 - k * alpha
             self.setVel(L, R)
 
 

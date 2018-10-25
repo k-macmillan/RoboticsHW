@@ -45,7 +45,7 @@ class Problem2(RosController):
         self.pub_right = wheels.create_publisher(Float32,
                                                  '/basic_bug/wheel_right')
         self.msg_wheels = Float32()
-        self.setVel(2.0, 2.0)
+        self.setVel(3.0, 3.0)
 
     def setVel(self, left=None, right=None):
         if left is not None:
@@ -78,6 +78,7 @@ class Problem2(RosController):
                 hit_obj = True
                 # print('Bumped: ', i)
 
+        # If we hit an object turn right, otherwise move forward
         if hit_obj and self.bumps < self.N:
             self.bumps += 1
             self.setVel(0.0, 3.0)
@@ -88,17 +89,20 @@ class Problem2(RosController):
     def gpsCallback(self, msg):
         # print('x,y:   {}, {}'.format(msg.x, msg.y))
         # print('\nGPS theta: {}'.format(msg.theta))
+
+        # If we are not bumping into something make progress towards goal
         if self.bumps == 0:
             # we need to move to goal
             theta = msg.theta
             twopi = 2 * pi
             wraps = int(theta / twopi)
             theta = theta - (wraps * twopi)
+            # To control slowdown as we approach 0
             if theta < -pi:
                 theta = twopi + theta
             k = 0.5
 
-            beta = arctan2(self.goal[1] - msg.y, self.goal[0] - msg.x) - pi / 2.0
+            beta = arctan2(self.goal[1] - msg.y, self.goal[0] - msg.x) - pi / 2
             alpha = beta - theta
             L = 3.0 + k * alpha
             R = 3.0 - k * alpha

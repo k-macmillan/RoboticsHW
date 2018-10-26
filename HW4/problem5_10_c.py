@@ -31,9 +31,9 @@ class State(Enum):
     MOV_TO_GOAL_2 = 4
 
 
-class Problem10a(RosController):
+class Problem10b(RosController):
     def __init__(self):
-        super(Problem10a, self).__init__()
+        super(Problem10b, self).__init__()
         self.b_speed = 0.50
         self.hit_obj = False
         self.obstacle = []
@@ -43,6 +43,7 @@ class Problem10a(RosController):
         self.temp_goal = (0.0, 0.0)
         self.obj_break = (-1, -1)
         self.state = State.MOV_TO_GOAL_1
+        self.origin = None
         self.setupWheels()
         self.setupBump()
         self.setupGPS()
@@ -92,30 +93,20 @@ class Problem10a(RosController):
                         self.last_bump = i
                     if i > 11:
                         speed = np.log2(i / 8.0)
-                        self.setVel(-speed + self.b_speed,
-                                    speed + self.b_speed)
+                        self.setVel(-speed + self.b_speed, speed + self.b_speed)
                         # print('Bumped: ', i)
             if self.last_bump < 11:
                 # print('Set constant speed...')
                 speed = np.log2(self.last_bump / 8.0)
                 self.setVel(speed + self.b_speed, -speed + self.b_speed)
 
-    def setMinDistPt(self):
-        min_dist = float("inf")
-        best = self.obstacle[0]
-        for point in self.obstacle:
-            dist = (self.goal[0] - point[0])**2 + (self.goal[1] - point[1])**2
-            if dist < min_dist:
-                min_dist = dist
-                best = point
-        return best
-
     def distToGoal(self, msg):
         return np.sqrt((self.goal[0] - msg.x)**2 + (self.goal[1] - msg.y)**2)
 
     def gpsCallback(self, msg):
-        # print('x,y:   {}, {}'.format(msg.x, msg.y))
-        # print('\nGPS theta: {}'.format(msg.theta))
+        if self.origin is None:
+            self.origin = (msg.x, msg.y)
+            self.calcSlope()
 
         # Calc bump x,y:
         if self.hit_obj:
@@ -126,23 +117,30 @@ class Problem10a(RosController):
             if self.last_bump > 9:
                 self.temp_goal = theta1
 
-            if xy in self.obstacle:
-                if len(self.obstacle) > 3 and xy == self.obj_break:
-                    # Full circle
-                    temp = self.setMinDistPt()
-                    if self.obj_break == temp:
-                        # Cheating
-                        print('Rotating...')
-                        self.state = State.ROUTE_BEST
-                        self.setVel(self.b_speed, -self.b_speed)
-                    else:
-                        self.obj_break = temp
-            else:
-                self.last_xy = xy
+            if xy not in self.obstacle:
                 self.obstacle.append(xy)
-                self.obj_break = self.obstacle[0]  # Only need to set it once
+                if len(self.obstacle) > 3:
+                    theta = msg.theta
+                    twopi = 2 * np.pi
+                    wraps = int(theta / twopi)
+                    theta = theta - (wraps * twopi)
+                    # To control slowdown as we approach 0
+                    if theta < -np.pi:
+                        theta = twopi + theta
 
-        elif self.state == State.ROUTE_BEST:
+                    beta = np.arctan2(self.goal[1] - msg.y,
+                                      self.goal[0] - msg.x) - np.pi / 2.0
+                    alpha = beta - theta
+
+                    if -0.5 < alpha < 0.5:
+                        print('Rotating...')
+                        # self.state = State.ROUTE_BEST
+                        self.setVel(-self.b_speed * alpha,
+                                    self.b_speed * alpha)
+                        if -0.125 < alpha < 0.125:
+                            self.state = State.MOV_TO_GOAL_2
+
+        elif self.state == State.MOV_TO_GOAL_2:
             theta = msg.theta
             twopi = 2 * np.pi
             wraps = int(theta / twopi)
@@ -156,7 +154,7 @@ class Problem10a(RosController):
             alpha = beta - theta
 
             if -0.5 < alpha < 0.5:
-                print('\n\nMoving to goal now...\n\n')
+                print('Moving to goal now...\n')
                 dist = self.distToGoal(msg)
                 if dist > 0.50:
                     speed = self.b_speed
@@ -166,5 +164,5 @@ class Problem10a(RosController):
 
 
 if __name__ == '__main__':
-    p10a = Problem10a()
-    p10a.run()
+    p10b = Problem10b()
+    p10b.run()

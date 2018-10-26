@@ -100,7 +100,7 @@ class Problem2(RosController):
             # To control slowdown as we approach 0
             if theta < -pi:
                 theta = twopi + theta
-            k = 0.5
+            k = 0.25
 
             beta = arctan2(self.goal[1] - msg.y, self.goal[0] - msg.x) - pi / 2
             alpha = beta - theta

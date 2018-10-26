@@ -51,7 +51,9 @@
 \newpage
 \section{\textbf{Problem 5.2}}
 The meat and potatoes of this problem is in bump and gps callbacks, the 
-rest is filler but can be found \href{https://github.com/macattackftw/RoboticsHW/blob/master/HW4/Problem2.py}{here}. The environment used is shown in Figure \ref{fig:stuck1}.
+rest is filler but can be found \href{https://github.com/macattackftw/RoboticsHW/blob/master/HW4/Problem2.py}{here}. 
+The environment used is shown in Figure \ref{fig:stuck1}. The robot attempts to 
+go to a point such as $(0, 20)$ which it cannot get to from within the box.
 
 \begin{minted}{python}
 def bumpCallback(self, msg):

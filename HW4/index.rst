@@ -3,34 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to HW4's documentation!
-===============================
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
-
-
-**Homework 4**
-==============================
-
-Kyle MacMillan
-
-
-
-**Text Addition - Better Beacon Grid Robot Finding**
-====================
+**3D Beacon Grid Robot Finding**
+===================================
 
 Another way you can track down the location of a robot given multiple beacons 
 is to check regions of the field in a recursive manner. If you assume the 
@@ -87,7 +61,7 @@ radius we would clip the bottom left quadrant. We would have two quadrants with
 three intersecting beacon radii. When each of those quadrants is evaluated the 
 left quardrant will find zero quadrants with three beacons so would return as 
 complete whereas the right quadrant would find another quadrant and dig deeper.
-The orthogonality of beacons helps segment. 
+The orthogonality of beacons helps segment.
 
 Also, when taken to 3D the overlap is more pronounced. This could still be a 
 problem in 2D, but it is a larger problem in 3D. It is possible that with 3 

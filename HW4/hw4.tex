@@ -53,7 +53,10 @@
 The meat and potatoes of this problem is in bump and gps callbacks, the 
 rest is filler but can be found \href{https://github.com/macattackftw/RoboticsHW/blob/master/HW4/Problem2.py}{here}. 
 The environment used is shown in Figure \ref{fig:stuck1}. The robot attempts to 
-go to a point such as $(0, 20)$ which it cannot get to from within the box.
+go to a point such as $(0, 20)$ which it cannot get to from within the box. In 
+the homework submission \href{}{a video} was attached showing the basic motion bot 
+attempting to reach the point $(0, 20)$. The box center is at $(0, 0)$ and has a 
+height/width of 10. So the robot's goal is outside the box.
 
 \begin{minted}{python}
 def bumpCallback(self, msg):

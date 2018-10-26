@@ -16,7 +16,8 @@
 #     endif
 # end while
 
-from std_msgs.msg import Float32, ByteMultiArray
+from std_msgs.msg import Float32
+from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Pose2D
 from RosController import *
 from struct import *
@@ -31,9 +32,9 @@ class State(Enum):
     MOV_TO_GOAL_2 = 4
 
 
-class Problem10b(RosController):
+class Problem10d(RosController):
     def __init__(self):
-        super(Problem10b, self).__init__()
+        super(Problem10d, self).__init__()
         self.b_speed = 0.50
         self.hit_obj = False
         self.obstacle = []
@@ -71,10 +72,10 @@ class Problem10b(RosController):
         # print('L: {}\nR: {}'.format(left, right))
 
     def setupBump(self):
-        bump = self.makeNode('Bump')
-        self.pub_bump = bump.create_subscription(ByteMultiArray,
-                                                 '/bug/touch',
-                                                 self.bumpCallback)
+        lidar = self.makeNode('Lidar')
+        self.pub_lidar = lidar.create_subscription(LaserScan,
+                                                   '/bug/LIDAR',
+                                                   self.lidarCallback)
 
     def setupGPS(self):
         gps = self.makeNode('GPS')
@@ -82,37 +83,57 @@ class Problem10b(RosController):
                                            '/bug/GPS',
                                            self.gpsCallback)
 
-    def bumpCallback(self, msg):
+    def lidarCallback(self, msg):
         self.hit_obj = False
-        if self.state != State.MOV_TO_GOAL_2:
-            for i in range(len(msg.data)):
-                hit = unpack('b', msg.data[i])[0]
-                if hit:
-                    self.hit_obj = True
-                    if self.last_bump != i:
-                        self.last_bump = i
-                    if i > 11:
-                        speed = np.log2(i / 8.0)
-                        self.setVel(-speed + self.b_speed, speed + self.b_speed)
-                        # print('Bumped: ', i)
+        min_dist = float("inf")
+        min_idx = 0
+        for i in range(len(msg.ranges)):            
+            if msg.ranges[i] < min_dist:
+                self.hit_obj = True
+                min_dist = msg.ranges[i]
+                min_idx = i
+
+        if self.hit_obj:
+            self.last_bump = min_idx        
+            if self.last_bump > 11:
+                speed = np.log2(i / 8.0)
+                self.setVel(-speed + self.b_speed, speed + self.b_speed)
             if self.last_bump < 11:
-                # print('Set constant speed...')
-                speed = np.log2(self.last_bump / 8.0)
-                self.setVel(speed + self.b_speed, -speed + self.b_speed)
+                    # print('Set constant speed...')
+                    speed = np.log2(self.last_bump / 8.0)
+                    self.setVel(speed + self.b_speed, -speed + self.b_speed)
+        # print('Min idx: {}\nMin dist: {}'.format(min_idx, min_dist))
+        
+        # if self.state != State.MOV_TO_GOAL_2:
+        #     for i in range(len(msg.data)):
+        #         hit = unpack('b', msg.data[i])[0]
+        #         if hit:
+        #             self.hit_obj = True
+        #             if self.last_bump != i:
+        #                 self.last_bump = i
+        #             if i > 11:
+        #                 speed = np.log2(i / 8.0)
+        #                 self.setVel(-speed + self.b_speed, speed + self.b_speed)
+        #                 # print('Bumped: ', i)
+        #     if self.last_bump < 11:
+        #         # print('Set constant speed...')
+        #         speed = np.log2(self.last_bump / 8.0)
+        #         self.setVel(speed + self.b_speed, -speed + self.b_speed)
 
     def distToGoal(self, msg):
         return np.sqrt((self.goal[0] - msg.x)**2 + (self.goal[1] - msg.y)**2)
 
     def gpsCallback(self, msg):
-        if self.origin is None:
-            self.origin = (msg.x, msg.y)
-            self.calcSlope()
+        print('x,y:   {}, {}'.format(msg.x, msg.y))
+        print('\nGPS theta: {}'.format(msg.theta))
+        # self.setVel(self.b_speed, self.b_speed)
 
         # Calc bump x,y:
-        if self.hit_obj:
+        if self.hit_obj and msg.theta != float('nan'):
             theta1 = (self.last_bump * 10 - 90) * np.pi / 180.0 + msg.theta
             x_bump = np.cos(theta1) + msg.x
             y_bump = np.sin(theta1) + msg.y
+            print('Theta: {}\nX: {}\nY: {}'.format(theta1, x_bump, y_bump))
             xy = (int(x_bump), int(y_bump))  # Discretize
             if self.last_bump > 9:
                 self.temp_goal = theta1
@@ -164,5 +185,5 @@ class Problem10b(RosController):
 
 
 if __name__ == '__main__':
-    p10b = Problem10b()
-    p10b.run()
+    p10d = Problem10d()
+    p10d.run()

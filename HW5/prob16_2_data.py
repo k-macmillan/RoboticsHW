@@ -46,7 +46,7 @@ mean = np.mean(dist_sens, dtype=np.float64, axis=0)
 std = np.std(dist_sens, dtype=np.float64, axis=0)
 
 zdist_sens = dist_sens - mean
-zmean = np.mean(zdist_sens)
+zmean = np.mean(zdist_sens, dtype=np.float64, axis=0)
 zstd = std / np.std(zdist_sens, dtype=np.float64, axis=0)
 
 print(mean)

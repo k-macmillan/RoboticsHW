@@ -1,72 +1,85 @@
-import numpy as np
+import random
 
 
 class WaveFrontDemo():
     def __init__(self):
+        random.seed(a=None, version=2)
+        self.reset()
+
+    def reset(self):
         self.N = 30
-        self.grid = np.empty([self.N, self.N], dtype=np.unicode_)
-        # self.mark = '\u2588'
-        # self.mark = self.mark.encode('utf-8')
+        self.num_obs = 4, 9
+        self.obs_size = 2, 5
+        self.start = 0, 0
+        self.goal = 29, 29
         self.obstacles = []
         self.__generateMap()
-        self.__generateObstacles()
+
+    def newMap(self, n=30,
+               min_obs=4, max_obs=9,
+               min_obs_size=2, max_obs_size=5,
+               start=(0, 0), goal=(29, 29)):
+        self.N = n
+        self.num_obs = min_obs, max_obs
+        self.obs_size = min_obs_size, max_obs_size
+        self.start = start
+        self.goal = goal if (goal[0] < n and goal[1] < n) else (n - 1, n - 1)
+        self.obstacles = []
+        self.__generateMap()
+        self.__generateObstacles(random.randint(self.num_obs[0],
+                                                self.num_obs[1]))
+        self.__addObsToMap()
+        self.__addStartGoal()
 
     def __generateMap(self):
-        self.grid[:] = ' '
-        self.printGrid()
+        self.grid = [['|  |' for x in range(self.N)] for y in range(self.N)]
+        # self.printGrid()
 
-    def __generateObstacles(self):
-        self.__obstacle1()
-        self.__obstacle2()
-        self.__obstacle3()
-        # Apply each obstacle to the map at a random location
+    def __generateObstacles(self, obs):
+        """Generate a number of obstacles of random makeup"""
+        for i in range(obs):
+            self.__obstacleOfChaos(n=random.randint(self.obs_size[0],
+                                                    self.obs_size[1]))
 
-    def __obstacle1(self):
-        obstacle = np.array([[' ', '█', ' '],
-                             [' ', '█', '█'],
-                             ['█', '█', ' ']])
-        self.obstacles.append(obstacle)
-        # self.__printObstacle(obstacle)
-
-    def __obstacle2(self):
-        obstacle = np.array([[' ', ' ', ' '],
-                             [' ', ' ', ' '],
-                             [' ', ' ', ' ']])
-        self.obstacles.append(obstacle)
-        # self.__printObstacle(obstacle)
-
-    def __obstacle3(self):
-        obstacle = np.array([[' ', ' ', ' '],
-                             [' ', ' ', ' '],
-                             [' ', ' ', ' ']])
-        self.obstacles.append(obstacle)
-        # self.__printObstacle(obstacle)
-
-    def __agentOfChaos(self, n=3):
+    def __obstacleOfChaos(self, n=3):
         """Generates random square array of random amounts of obstacles"""
-        pass
+        empty = '|  |'
+        obstacle = '|██|'
+        # Exploiting list comprehension
+        obs_obj = [[empty if bool(random.getrandbits(1)) else obstacle
+                   for x in range(n)] for y in range(n)]
+        self.obstacles.append(obs_obj)
 
-    def __discretizeMap(self):
-        pass
+    def __addObsToMap(self):
+        for obs in self.obstacles:
+            x = random.randint(0, self.N)
+            y = random.randint(0, self.N)
+            size = len(obs)
+            for i in range(size):
+                x_new = i + x
+                if x_new < self.N:
+                    for j in range(size):
+                        y_new = j + y
+                        if y_new < self.N:
+                            self.grid[x_new][y_new] = obs[i][j]
 
-    def __markObstacles(self):
-        obstacle = '█'
-        print(obstacle)
-        pass
+    def __addStartGoal(self):
+        self.grid[self.start[0]][self.start[1]] = '|SS|'
+        self.grid[self.goal[0]][self.goal[1]] = '|GG|'
 
     def navigate(self):
         pass
 
     def printGrid(self):
         for i in range(self.N):
-            row = ""
+            row = ''
             for j in range(self.N):
                 row += self.grid[i][j]
             print(row)
 
     def __printObstacle(self, obs):
         for i in range(3):
-            row = ""
+            row = ''
             for j in range(3):
                 row += obs[i][j]
             print(row)
@@ -74,4 +87,6 @@ class WaveFrontDemo():
 
 if __name__ == "__main__":
     wf = WaveFrontDemo()
+    wf.newMap(15)
+    wf.printGrid()
     wf.navigate()

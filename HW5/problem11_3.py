@@ -105,6 +105,7 @@ class WaveFrontDemo():
     def __validPoint(self, pt):
         if 0 <= pt[0] < self.N and 0 <= pt[1] < self.N:
             return self.__notObstacle(pt)
+        return False
 
     def __notObstacle(self, pt):
         """Ensures not an obstacle"""

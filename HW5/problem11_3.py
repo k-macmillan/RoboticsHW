@@ -6,7 +6,7 @@ from collections import deque
 class WaveFrontDemo():
     def __init__(self):
         # random.seed(a=None, version=2)
-        random.seed(a=24, version=2)
+        random.seed(a=2, version=2)
         self.reset()
 
     def reset(self):
@@ -108,7 +108,7 @@ class WaveFrontDemo():
             dist = str(dist) if dist > 9 else '0' + str(dist)
             dist = '|' + dist + '|'
             for pt in next_pos:
-                if self.__inBounds(pt) and self.__notObstacle(pt):
+                if self.__inBounds(pt) and self.__notObsOrVisited(pt):
                     self.grid[pt[0]][pt[1]] = dist
                     q.put(pt)
 
@@ -116,7 +116,7 @@ class WaveFrontDemo():
         """Checks if the point is in the bounds of the map"""
         return 0 <= pt[0] < self.N and 0 <= pt[1] < self.N
 
-    def __notObstacle(self, pt):
+    def __notObsOrVisited(self, pt):
         """Ensures not an obstacle or previously visited"""
         return self.grid[pt[0]][pt[1]] == '|  |'
 

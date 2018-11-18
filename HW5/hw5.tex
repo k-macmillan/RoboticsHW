@@ -76,6 +76,17 @@ The seed for that particular example is: \texttt{7635686187880284248}
     \label{fig:p11_3_2}
 \end{figure}
 
+The book constantly refers to this as a start to goal process but that is not 
+how flood-fill works because you can not guarantee shortest path; you can not 
+have it both ways. The book calls for ``minimal path'' but then uses a 
+non-optimal solver. I wrote it as the book asked the first time around then 
+changed it to actually give the optimal answer because that's what we want.
+
+To clarify: Starting from the start is fine but you have to traverse it 
+backwards from goal to start. The reason is because you do not know which of the 
+``equal'' numbers to choose when you're walking from start to goal. You 
+\textbf{know} which path is the shortest if you walk from goal to start. If two 
+numbers are the same then either path is optimal/minimal.
 
 \newpage
 \section{\textbf{Chapter 16}}

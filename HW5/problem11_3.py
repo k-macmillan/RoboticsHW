@@ -19,6 +19,7 @@ class WaveFrontDemo():
         print('Seed: {}\n'.format(wf.getSeed()))
 
     def reset(self):
+        """Resets variables"""
         self.N = 30
         self.num_obs = 4, 9
         self.obs_size = 2, 5
@@ -56,7 +57,6 @@ class WaveFrontDemo():
     def __generateMap(self):
         self.grid = [['|  |' for x in range(self.N)] for y in range(self.N)]
         self.visited = [[False for x in range(self.N)] for y in range(self.N)]
-        # self.printGrid()
 
     def __generateObstacles(self, obs):
         """Generate a number of obstacles of random makeup"""
@@ -93,6 +93,7 @@ class WaveFrontDemo():
                             self.grid[x_new][y_new] = obs[i][j]
 
     def __addStartGoal(self):
+        """Just replaces the start and goal markers"""
         self.grid[self.start[0]][self.start[1]] = '|SS|'
         self.grid[self.goal[0]][self.goal[1]] = '|GG|'
 
@@ -138,13 +139,14 @@ class WaveFrontDemo():
 
     def navigate(self, point=None):
         """Returns a deque object containing the path"""
+        self.printSeed()
         if point is None:
             self.visited[self.goal[0]][self.goal[1]] = True
+            self.path.append(self.goal)
             self.__navigate(self.goal)
-            # self.visited[self.start[0]][self.start[1]] = True
-            # self.__navigate(self.start)
         else:
             self.visited[point[0]][point[1]] = True
+            self.path.append(point)
             self.__navigate(point)
 
         if not self.path:
@@ -167,15 +169,20 @@ class WaveFrontDemo():
             pts.append((x, y + 1))   # South
             pts.append((x - 1, y))   # West
             best = self.__findMin(pts)
+            if best is None:
+                # Means there is no path
+                self.path.clear()
+                return
             self.path.append(best)
 
     def __findMin(self, pts):
+        """Finds the minimum distance point to go to"""
         best = pts[0]
         min_val = self.N * self.N
         for pt in pts:
             if self.__validPt(pt):
                 pt_str = self.grid[pt[0]][pt[1]]
-                if pt_str == '|GG|':
+                if pt_str == '|GG|' or pt_str == '|  |':
                     dist = min_val
                 else:
                     dist = pt_str[1:3] if pt_str != '|SS|' else '00'
@@ -183,10 +190,10 @@ class WaveFrontDemo():
                 if dist < min_val:
                     best = pt
                     min_val = dist
-
-        return best
+        return best if min_val != self.N * self.N else None
 
     def printGrid(self):
+        """Prints the map/grid"""
         for i in range(self.N):
             row = ''
             for j in range(self.N):
@@ -195,6 +202,7 @@ class WaveFrontDemo():
         print()
 
     def __printObstacle(self, obs):
+        """Prints obstacles for debugging"""
         for i in range(3):
             row = ''
             for j in range(3):
@@ -202,10 +210,11 @@ class WaveFrontDemo():
             print(row)
 
     def drawPath(self):
+        """Replaces distances with path"""
         while self.path:
             x, y = self.path.pop()
             self.grid[x][y] = '|--|'
-        self.grid[self.start[0]][self.start[1]] = '|SS|'
+        self.__addStartGoal()
 
 
 if __name__ == "__main__":

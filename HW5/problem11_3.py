@@ -1,13 +1,22 @@
 import random
+from sys import maxsize
 from queue import Queue
 from collections import deque
 
 
 class WaveFrontDemo():
     def __init__(self):
-        # random.seed(a=None, version=2)
-        random.seed(a=2, version=2)
+        self.seed = random.randrange(maxsize)
+        random.seed(a=self.seed, version=2)
+        # random.seed(a=42, version=2)  # Blocked path, for testing
+        # random.seed(a=2, version=2)   # Safe path, for testing
         self.reset()
+
+    def getSeed(self):
+        return self.seed
+
+    def printSeed(self):
+        print('Seed: {}\n'.format(wf.getSeed()))
 
     def reset(self):
         self.N = 30
@@ -23,11 +32,13 @@ class WaveFrontDemo():
                min_obs=4, max_obs=9,
                min_obs_size=2, max_obs_size=5,
                start=(0, 0), goal=(29, 29)):
+        """Generates a new map based on the conditions set"""
         if n > 99:
             print('\n******************* WARNING *******************' +
                   '\nn is too large for newMap(). Usage n=0 to n=99' +
                   '\n***********************************************\n')
             exit()
+        print()
         self.N = n
         self.num_obs = min_obs, max_obs
         self.obs_size = min_obs_size, max_obs_size
@@ -44,6 +55,7 @@ class WaveFrontDemo():
 
     def __generateMap(self):
         self.grid = [['|  |' for x in range(self.N)] for y in range(self.N)]
+        self.visited = [[False for x in range(self.N)] for y in range(self.N)]
         # self.printGrid()
 
     def __generateObstacles(self, obs):
@@ -120,24 +132,30 @@ class WaveFrontDemo():
         """Ensures not an obstacle or previously visited"""
         return self.grid[pt[0]][pt[1]] == '|  |'
 
-    def __validPoint(self, pt):
+    def __validPt(self, pt):
+        """Checks for the point for validity"""
         return self.__inBounds(pt) and self.grid[pt[0]][pt[1]] != '|██|'
 
     def navigate(self, point=None):
         """Returns a deque object containing the path"""
         if point is None:
+            self.visited[self.start[0]][self.start[1]] = True
             self.__navigate(self.start)
         else:
+            self.visited[point[0]][point[1]] = True
             self.__navigate(point)
 
         if not self.path:
-            print('Unable to form a path due to obstacles')
+            print('\nUnable to form a path due to obstacles.\n')
 
         return self.path
 
+    def __visited(self, pt):
+        """Checks the point against the visited array"""
+        return self.visited[pt[0]][pt[1]]
+
     def __navigate(self, point):
         """Recursive function call to walk path"""
-        print('recursing')
         x = point[0]
         y = point[1]
         pt_str = self.grid[x][y]
@@ -156,13 +174,14 @@ class WaveFrontDemo():
 
         found = ''
         for pt in pts:
-            if self.__validPoint(pt) and found == '':
+            if self.__validPt(pt) and found == '' and not self.__visited(pt):
                 pt_str = self.grid[pt[0]][pt[1]]
                 if pt_str == '|GG|':
                     return '|GG|'
                 next_dist = int(pt_str[1:3])
                 if next_dist == dist + 1:
                     self.path.append(pt)
+                    self.visited[pt[0]][pt[1]] = True
                     found = self.__navigate(pt)
 
         if found == '':
@@ -199,6 +218,8 @@ if __name__ == "__main__":
     path = wf.navigate()
 
     wf.printGrid()
+    if path:
+        wf.drawPath()
+        wf.printGrid()
 
-    wf.drawPath()
-    wf.printGrid()
+    wf.printSeed()

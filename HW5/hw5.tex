@@ -2,7 +2,8 @@
 \usepackage{pdfpages}
 \usepackage{graphicx}  % For PNG
 \usepackage[left=2cm, right=2cm, top=2cm]{geometry}
-\usepackage{minted}
+\usepackage[newfloat]{minted}
+\usepackage{enumitem}
 % Give Table of Contents Hyperlinks
 \usepackage{hyperref}
 \hypersetup{
@@ -12,6 +13,8 @@
     linkcolor=black,
     urlcolor=blue
 }
+% \renewcommand{\theenumi}{\Alph{enumi}} % https://tex.stackexchange.com/a/2292
+
 \pagenumbering{gobble}
 % \pagenumbering{roman} % set the numbering style to lowercase letter
 
@@ -95,7 +98,39 @@ numbers are the same then either path is optimal/minimal.
 asdf
 
 \subsection{Problem 2}
-asdf
+Given 40 measurements at 2 meters we can subtract the 2 meters and then take 
+the mean:
+
+\begin{enumerate}[label=\Alph*]
+    \item 0.23521735
+    \item -0.13556097
+    \item 0.33806001
+\end{enumerate}
+
+That is how far off each senor averages from 2 meters. Each new sensor reading 
+then has that mean subtracted from it to yield:
+
+\begin{enumerate}[label=\Alph*]
+    \item 2.22255225
+    \item 2.03233526
+    \item 1.79719609
+\end{enumerate}
+
+We can then take the mean of those values for an expected distance of: 
+\texttt{2.0173612016666667}. The code for this can be found 
+\href{}{here} 
+and in the code snippet \ref{code:16_2}.
+
+\begin{code}
+\label{code:16_2}
+\begin{minted}{python}
+    dist_sens -= 2
+    mean = np.mean(dist_sens, dtype=np.float64, axis=0)
+    new_sens = np.array([[2.4577696, 1.8967743, 2.1352561]]) - mean
+    distance = np.mean(new_sens)
+\end{minted}
+\end{code}
+
 
 \newpage
 \section{\textbf{Chapter 17}}

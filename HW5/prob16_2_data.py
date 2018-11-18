@@ -42,14 +42,11 @@ dist_sens = np.array([[2.2411549, 1.8286673, 2.3295015],
                      [2.3734464, 1.9632258, 2.0907554],
                      [2.0563260, 1.9367908, 2.2130578]])
 
+dist_sens -= 2
 mean = np.mean(dist_sens, dtype=np.float64, axis=0)
-std = np.std(dist_sens, dtype=np.float64, axis=0)
+new_sens = np.array([[2.4577696, 1.8967743, 2.1352561]]) - mean
+distance = np.mean(new_sens)
 
-zdist_sens = dist_sens - mean
-zmean = np.mean(zdist_sens, dtype=np.float64, axis=0)
-zstd = std / np.std(zdist_sens, dtype=np.float64, axis=0)
-
-print(mean)
-print(std)
-print(zmean)
-print(zstd)
+print('\nMean offset:                  {}'.format(mean))
+print('Estimated sensor corrections: {}'.format(new_sens))
+print('Estimated distance:           {}\n'.format(distance))

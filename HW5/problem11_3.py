@@ -139,8 +139,10 @@ class WaveFrontDemo():
     def navigate(self, point=None):
         """Returns a deque object containing the path"""
         if point is None:
-            self.visited[self.start[0]][self.start[1]] = True
-            self.__navigate(self.start)
+            self.visited[self.goal[0]][self.goal[1]] = True
+            self.__navigate(self.goal)
+            # self.visited[self.start[0]][self.start[1]] = True
+            # self.__navigate(self.start)
         else:
             self.visited[point[0]][point[1]] = True
             self.__navigate(point)
@@ -155,40 +157,34 @@ class WaveFrontDemo():
         return self.visited[pt[0]][pt[1]]
 
     def __navigate(self, point):
-        """Recursive function call to walk path"""
-        x = point[0]
-        y = point[1]
-        pt_str = self.grid[x][y]
+        """Function call to walk path"""
+        best = self.goal
+        while best != self.start:
+            x = best[0]
+            y = best[1]
+            pts = [(x, y - 1)]       # North
+            pts.append((x + 1, y))   # East
+            pts.append((x, y + 1))   # South
+            pts.append((x - 1, y))   # West
+            best = self.__findMin(pts)
+            self.path.append(best)
 
-        # Found the end
-        if pt_str == '|GG|':
-            return '|GG|'
-
-        dist = pt_str[1:3] if pt_str != '|SS|' else '00'
-        dist = int(dist)
-
-        pts = [(x, y - 1)]       # North
-        pts.append((x + 1, y))   # East
-        pts.append((x, y + 1))   # South
-        pts.append((x - 1, y))   # West
-
-        found = ''
+    def __findMin(self, pts):
+        best = pts[0]
+        min_val = self.N * self.N
         for pt in pts:
-            if self.__validPt(pt) and found == '' and not self.__visited(pt):
+            if self.__validPt(pt):
                 pt_str = self.grid[pt[0]][pt[1]]
                 if pt_str == '|GG|':
-                    return '|GG|'
-                next_dist = int(pt_str[1:3])
-                if next_dist == dist + 1:
-                    self.path.append(pt)
-                    self.visited[pt[0]][pt[1]] = True
-                    found = self.__navigate(pt)
+                    dist = min_val
+                else:
+                    dist = pt_str[1:3] if pt_str != '|SS|' else '00'
+                    dist = int(dist)
+                if dist < min_val:
+                    best = pt
+                    min_val = dist
 
-        if found == '':
-            self.path.pop()
-            return ''
-        else:
-            return '|GG|'
+        return best
 
     def printGrid(self):
         for i in range(self.N):

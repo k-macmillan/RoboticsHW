@@ -1,10 +1,12 @@
 import random
 from queue import Queue
+from collections import deque
 
 
 class WaveFrontDemo():
     def __init__(self):
-        random.seed(a=None, version=2)
+        # random.seed(a=None, version=2)
+        random.seed(a=24, version=2)
         self.reset()
 
     def reset(self):
@@ -15,6 +17,7 @@ class WaveFrontDemo():
         self.goal = 29, 29
         self.obstacles = []
         self.__generateMap()
+        self.path = deque()
 
     def newMap(self, n=30,
                min_obs=4, max_obs=9,
@@ -36,6 +39,8 @@ class WaveFrontDemo():
                                                 self.num_obs[1]))
         self.__addObsToMap()
         self.__addStartGoal()
+        self.__fillBFS()
+        self.path.append(self.start)
 
     def __generateMap(self):
         self.grid = [['|  |' for x in range(self.N)] for y in range(self.N)]
@@ -60,13 +65,18 @@ class WaveFrontDemo():
         for obs in self.obstacles:
             x = random.randint(0, self.N)
             y = random.randint(0, self.N)
+            x_new = 0
+            y_new = 0
             size = len(obs)
+
             # Ugly, but nested for loops are ugly
             for i in range(size):
                 x_new = i + x
+                # Bounds checking
                 if x_new < self.N:
                     for j in range(size):
                         y_new = j + y
+                        # Bounds checking
                         if y_new < self.N:
                             self.grid[x_new][y_new] = obs[i][j]
 
@@ -78,7 +88,7 @@ class WaveFrontDemo():
         """Simple 4 direction BFS"""
         q = Queue(maxsize=self.N * self.N)
         q.put(self.start)
-        depth = 0
+        dist = 0
 
         while not q.empty():
             pos = q.get()
@@ -90,29 +100,76 @@ class WaveFrontDemo():
             next_pos.append((x, y + 1))   # South
             next_pos.append((x - 1, y))   # West
 
-            depth = self.grid[x][y]
-            depth = depth[1:3] if self.grid[x][y] != '|SS|' else '00'
+            dist = self.grid[x][y]
+            dist = dist[1:3] if self.grid[x][y] != '|SS|' else '00'
 
-            # Increase current depth for all points we are investigating
-            depth = int(depth) + 1
-            depth = str(depth) if depth > 9 else '0' + str(depth)
-            depth = '|' + depth + '|'
+            # Increase current dist for all points we are investigating
+            dist = int(dist) + 1
+            dist = str(dist) if dist > 9 else '0' + str(dist)
+            dist = '|' + dist + '|'
             for pt in next_pos:
-                if self.__validPoint(pt):
-                    self.grid[pt[0]][pt[1]] = depth
+                if self.__inBounds(pt) and self.__notObstacle(pt):
+                    self.grid[pt[0]][pt[1]] = dist
                     q.put(pt)
 
-    def __validPoint(self, pt):
-        if 0 <= pt[0] < self.N and 0 <= pt[1] < self.N:
-            return self.__notObstacle(pt)
-        return False
+    def __inBounds(self, pt):
+        """Checks if the point is in the bounds of the map"""
+        return 0 <= pt[0] < self.N and 0 <= pt[1] < self.N
 
     def __notObstacle(self, pt):
-        """Ensures not an obstacle"""
+        """Ensures not an obstacle or previously visited"""
         return self.grid[pt[0]][pt[1]] == '|  |'
 
-    def navigate(self):
-        self.__fillBFS()
+    def __validPoint(self, pt):
+        return self.__inBounds(pt) and self.grid[pt[0]][pt[1]] != '|██|'
+
+    def navigate(self, point=None):
+        """Returns a deque object containing the path"""
+        if point is None:
+            self.__navigate(self.start)
+        else:
+            self.__navigate(point)
+
+        if not self.path:
+            print('Unable to form a path due to obstacles')
+
+        return self.path
+
+    def __navigate(self, point):
+        """Recursive function call to walk path"""
+        print('recursing')
+        x = point[0]
+        y = point[1]
+        pt_str = self.grid[x][y]
+
+        # Found the end
+        if pt_str == '|GG|':
+            return '|GG|'
+
+        dist = pt_str[1:3] if pt_str != '|SS|' else '00'
+        dist = int(dist)
+
+        pts = [(x, y - 1)]       # North
+        pts.append((x + 1, y))   # East
+        pts.append((x, y + 1))   # South
+        pts.append((x - 1, y))   # West
+
+        found = ''
+        for pt in pts:
+            if self.__validPoint(pt) and found == '':
+                pt_str = self.grid[pt[0]][pt[1]]
+                if pt_str == '|GG|':
+                    return '|GG|'
+                next_dist = int(pt_str[1:3])
+                if next_dist == dist + 1:
+                    self.path.append(pt)
+                    found = self.__navigate(pt)
+
+        if found == '':
+            self.path.pop()
+            return ''
+        else:
+            return '|GG|'
 
     def printGrid(self):
         for i in range(self.N):
@@ -120,6 +177,7 @@ class WaveFrontDemo():
             for j in range(self.N):
                 row += self.grid[i][j]
             print(row)
+        print()
 
     def __printObstacle(self, obs):
         for i in range(3):
@@ -128,11 +186,19 @@ class WaveFrontDemo():
                 row += obs[i][j]
             print(row)
 
+    def drawPath(self):
+        while self.path:
+            x, y = self.path.pop()
+            self.grid[x][y] = '|--|'
+        self.grid[self.start[0]][self.start[1]] = '|SS|'
+
 
 if __name__ == "__main__":
     wf = WaveFrontDemo()
-    wf.newMap(15)
-    # wf.printGrid()
-    wf.navigate()
-    # print()
+    wf.newMap(n=15)
+    path = wf.navigate()
+
+    wf.printGrid()
+
+    wf.drawPath()
     wf.printGrid()

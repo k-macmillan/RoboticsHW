@@ -19,6 +19,11 @@ class WaveFrontDemo():
                min_obs=4, max_obs=9,
                min_obs_size=2, max_obs_size=5,
                start=(0, 0), goal=(29, 29)):
+        if n > 99:
+            print('\n******************* WARNING *******************' +
+                  '\nn is too large for newMap(). Usage n=0 to n=99' +
+                  '\n***********************************************\n')
+            exit()
         self.N = n
         self.num_obs = min_obs, max_obs
         self.obs_size = min_obs_size, max_obs_size
@@ -87,6 +92,6 @@ class WaveFrontDemo():
 
 if __name__ == "__main__":
     wf = WaveFrontDemo()
-    wf.newMap(15)
+    wf.newMap(150)
     wf.printGrid()
     wf.navigate()

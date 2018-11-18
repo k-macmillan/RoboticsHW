@@ -1,4 +1,5 @@
 import random
+from queue import Queue
 
 
 class WaveFrontDemo():
@@ -60,6 +61,7 @@ class WaveFrontDemo():
             x = random.randint(0, self.N)
             y = random.randint(0, self.N)
             size = len(obs)
+            # Ugly, but nested for loops are ugly
             for i in range(size):
                 x_new = i + x
                 if x_new < self.N:
@@ -72,8 +74,44 @@ class WaveFrontDemo():
         self.grid[self.start[0]][self.start[1]] = '|SS|'
         self.grid[self.goal[0]][self.goal[1]] = '|GG|'
 
+    def __fillBFS(self):
+        """Simple 4 direction BFS"""
+        q = Queue(maxsize=self.N * self.N)
+        q.put(self.start)
+        depth = 0
+
+        while not q.empty():
+            pos = q.get()
+            x = pos[0]
+            y = pos[1]
+
+            next_pos = [(x, y - 1)]       # North
+            next_pos.append((x + 1, y))   # East
+            next_pos.append((x, y + 1))   # South
+            next_pos.append((x - 1, y))   # West
+
+            depth = self.grid[x][y]
+            depth = depth[1:3] if self.grid[x][y] != '|SS|' else '00'
+
+            # Increase current depth for all points we are investigating
+            depth = int(depth) + 1
+            depth = str(depth) if depth > 9 else '0' + str(depth)
+            depth = '|' + depth + '|'
+            for pt in next_pos:
+                if self.__validPoint(pt):
+                    self.grid[pt[0]][pt[1]] = depth
+                    q.put(pt)
+
+    def __validPoint(self, pt):
+        if 0 <= pt[0] < self.N and 0 <= pt[1] < self.N:
+            return self.__notObstacle(pt)
+
+    def __notObstacle(self, pt):
+        """Ensures not an obstacle"""
+        return self.grid[pt[0]][pt[1]] == '|  |'
+
     def navigate(self):
-        pass
+        self.__fillBFS()
 
     def printGrid(self):
         for i in range(self.N):
@@ -92,6 +130,8 @@ class WaveFrontDemo():
 
 if __name__ == "__main__":
     wf = WaveFrontDemo()
-    wf.newMap(150)
-    wf.printGrid()
+    wf.newMap(15)
+    # wf.printGrid()
     wf.navigate()
+    # print()
+    wf.printGrid()

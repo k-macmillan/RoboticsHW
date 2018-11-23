@@ -42,11 +42,35 @@ dist_sens = np.array([[2.2411549, 1.8286673, 2.3295015],
                      [2.3734464, 1.9632258, 2.0907554],
                      [2.0563260, 1.9367908, 2.2130578]])
 
-dist_sens -= 2
+# Calculate mean and standard deviation
 mean = np.mean(dist_sens, dtype=np.float64, axis=0)
-new_sens = np.array([[2.4577696, 1.8967743, 2.1352561]]) - mean
-distance = np.mean(new_sens)
+std = np.std(dist_sens, dtype=np.float64, axis=0)
 
-print('\nMean offset:                  {}'.format(mean))
+# Reshape because it doesn't need to be 2D
+np.reshape(mean, (1, 3))
+np.reshape(std, (1, 3))
+
+new_sens = np.array([2.4577696, 1.8967743, 2.1352561]) + (2.0 - mean)
+# Book example numbers, aka sanity check:
+# mean = np.array([2.20548, 1.85962, 2.04204])
+# std = np.array([0.08698, 0.04282, 0.1767])
+# new_sens = np.array([2.02137, 2.04363, 2.13049])
+
+# Calculate variance
+var = std * std
+
+# Sensor fusion to obtain x_hat
+top = 0.0
+bot = 0.0
+for i in range(3):
+    top += (new_sens[i] / var[i])
+    bot += 1 / var[i]
+
+# Estimated distance
+x_hat = top / bot
+
+print('\nMeans:                        {}'.format(mean))
+print('Standard Deviations:          {}'.format(std))
+print('Variance:                     {}'.format(var))
 print('Estimated sensor corrections: {}'.format(new_sens))
-print('Estimated distance:           {}\n'.format(distance))
+print('Estimated distance:           {}\n'.format(x_hat))

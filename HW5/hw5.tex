@@ -98,13 +98,12 @@ numbers are the same then either path is optimal/minimal.
 asdf
 
 \subsection{Problem 2}
-Given 40 measurements at 2 meters we can subtract the 2 meters and then take 
-the mean:
+Given 40 measurements at 2 meters we can calculate the mean:
 
 \begin{enumerate}[label=\Alph*]
-    \item 0.23521735
-    \item -0.13556097
-    \item 0.33806001
+    \item 2.23521735
+    \item 1.86443904
+    \item 2.33806001
 \end{enumerate}
 
 That is how far off each senor averages from 2 meters. Each new sensor reading 
@@ -116,18 +115,38 @@ then has that mean subtracted from it to yield:
     \item 1.79719609
 \end{enumerate}
 
-We can then take the mean of those values for an expected distance of: 
-\texttt{2.0173612016666667} meters. The code for this can be found 
+We can then apply the formula provided in the sensor fusion portion of the book 
+for an expected distance of: \texttt{2.057449909256987} meters. The code for 
+this can be found 
 \href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem16_2_data.py}{here} 
 and in the code snippet \ref{code:16_2}.
 
 \begin{code}
 \label{code:16_2}
 \begin{minted}{python}
-    dist_sens -= 2
+    # Calculate mean and standard deviation
     mean = np.mean(dist_sens, dtype=np.float64, axis=0)
-    new_sens = np.array([[2.4577696, 1.8967743, 2.1352561]]) - mean
-    distance = np.mean(new_sens)
+    std = np.std(dist_sens, dtype=np.float64, axis=0)
+
+    # Reshape because it doesn't need to be 2D
+    np.reshape(mean, (1, 3))
+    np.reshape(std, (1, 3))
+
+    # Input for this step
+    new_sens = np.array([2.4577696, 1.8967743, 2.1352561]) + (2.0 - mean)
+
+    # Calculate variance
+    var = std * std
+
+    # Sensor fusion to obtain x_hat
+    top = 0.0
+    bot = 0.0
+    for i in range(3):
+        top += (new_sens[i] / var[i])
+        bot += 1 / var[i]
+
+    # Estimated distance
+    x_hat = top / bot
 \end{minted}
 \end{code}
 

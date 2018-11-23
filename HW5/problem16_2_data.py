@@ -50,6 +50,7 @@ std = np.std(dist_sens, dtype=np.float64, axis=0)
 np.reshape(mean, (1, 3))
 np.reshape(std, (1, 3))
 
+# Input for this step
 new_sens = np.array([2.4577696, 1.8967743, 2.1352561]) + (2.0 - mean)
 # Book example numbers, aka sanity check:
 # mean = np.array([2.20548, 1.85962, 2.04204])

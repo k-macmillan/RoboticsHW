@@ -54,7 +54,7 @@
 \newpage
 \section{\textbf{Chapter 11}}
 \subsection{Problem 3}
-To accomplish this problem I created a class to generate a random map of any 
+To complete this problem I created a class to generate a random map of any 
 size you want up to 99. It generates a random number of obstacles of random 
 size. Play around with it, it's fun. You can change the random numbers or just 
 run the file multiple times. Code for this problem can be found 
@@ -62,9 +62,8 @@ run the file multiple times. Code for this problem can be found
 
 Demonstration is shown in Figure \ref{fig:p11_3_1}. This is an application of 
 the WaveFront BFS algorithm. From there it goes on to find the shortest path as 
-seen in Figure \ref{fig:p11_3_2}.
-
-The seed for that particular example is: \texttt{7635686187880284248}
+seen in Figure \ref{fig:p11_3_2}. The seed for that particular example 
+is: \texttt{7635686187880284248}
 
 \begin{figure}[h]
     \centering
@@ -80,23 +79,55 @@ The seed for that particular example is: \texttt{7635686187880284248}
     \label{fig:p11_3_2}
 \end{figure}
 
-The book constantly refers to this as a start to goal process but that is not 
-how flood-fill works because you can not guarantee shortest path; you can not 
-have it both ways. The book calls for ``minimal path'' but then uses a 
-non-optimal solver. I wrote it as the book asked the first time around then 
-changed it to actually give the optimal answer because that's what we want.
+I discussed the algorithm with Dr. McGough and he was in agreement that it 
+didn't matter if you begin the wave at the start or goal. I reversed the point 
+of origin for the WaveFront because it makes more sense in my brain. The result 
+is the same so long as you start the WaveFront from one end and walk from the 
+other end back to the WaveFront origin. It's more robust if done this way, that 
+way if the goal is moving you don't have to redo the BFS, you just redo the 
+navigation step.
 
-To clarify: Starting from the start is fine but you have to traverse it 
-backwards from goal to start. The reason is because you do not know which of the 
-``equal'' numbers to choose when you're walking from start to goal. You 
-\textbf{know} which path is the shortest if you walk from goal to start. If two 
-numbers are the same then either path is optimal/minimal.
 
 \newpage
 \section{\textbf{Chapter 16}}
 \subsection{Problem 1}
-asdf
+Given mesaurements of: $z_1 = 284$, $z_2 = 257$, and $z_3 = 295$ and standard 
+deviations of $\sigma_1 = 10$, $\sigma_2 = 20$, and $\sigma_3 = 15$ we can setup 
+variance as the square of the standard deviations:
 
+\begin{enumerate}
+    \item 100
+    \item 400
+    \item 225
+\end{enumerate}
+
+Given the variance we can apply the formulas from section 16.3.3 in the book to 
+obtain an estimated state $\^{x} = 282.90163934426226$. Code for this problem 
+can be found 
+\href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem16_1.py}{here} 
+and in the code snippet \ref{code:16_1}.
+
+\begin{code}
+\label{code:16_1}
+\begin{minted}{python}
+    # Given values
+    measured = np.array([284, 257, 295])
+    std = np.array([10, 20, 15])
+
+    # Calculate variance
+    var = std * std
+
+    # Sensor fusion to obtain x_hat
+    top = 0.0
+    bot = 0.0
+    for i in range(3):
+        top += (measured[i] / var[i])
+        bot += 1 / var[i]
+
+    # Estimated distance
+    x_hat = top / bot
+\end{minted}
+\end{code}
 \subsection{Problem 2}
 Given 40 measurements at 2 meters we can calculate the mean:
 
@@ -116,9 +147,9 @@ then has that mean subtracted from it to yield:
 \end{enumerate}
 
 We can then apply the formula provided in the sensor fusion portion of the book 
-for an expected distance of: \texttt{2.057449909256987} meters. The code for 
+for an expected distance, $\^{x} = 2.057449909256987$ meters. The code for 
 this can be found 
-\href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem16_2_data.py}{here} 
+\href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem16_2.py}{here} 
 and in the code snippet \ref{code:16_2}.
 
 \begin{code}

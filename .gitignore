@@ -117,7 +117,6 @@ include/
 pip-selfcheck.json
 
 # RestructuredText
-Makefile
 _build/
 conf.py
 

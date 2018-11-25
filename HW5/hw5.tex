@@ -4,6 +4,7 @@
 \usepackage[left=2cm, right=2cm, top=2cm]{geometry}
 \usepackage[newfloat]{minted}
 \usepackage{enumitem}
+\usepackage{amsmath}    % For bmatrix
 % Give Table of Contents Hyperlinks
 \usepackage{hyperref}
 \hypersetup{
@@ -13,6 +14,7 @@
     linkcolor=black,
     urlcolor=blue
 }
+\newcommand\ddfrac[2]{\frac{\displaystyle #1}{\displaystyle #2}}
 % \renewcommand{\theenumi}{\Alph{enumi}} % https://tex.stackexchange.com/a/2292
 
 \pagenumbering{gobble}
@@ -128,7 +130,9 @@ and in the code snippet \ref{code:16_1}.
     x_hat = top / bot
 \end{minted}
 \end{code}
-\subsection{Problem 2}
+
+
+\subsection{Problem 2}{\label{problem:16.2}}
 Given 40 measurements at 2 meters we can calculate the mean:
 
 \begin{enumerate}[label=\Alph*]
@@ -185,8 +189,41 @@ and in the code snippet \ref{code:16_2}.
 \newpage
 \section{\textbf{Chapter 17}}
 \subsection{Problem 2}
-asdf
+The code for this problem can be found 
+\href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem17_2.py}{here}.
 
+The problem asked us to fuse three different measurements to determine an 
+estimate of the covariance. To do that I first applied the same sensor fusion 
+techniques utilized in \hyperref[problem:16.2]{Chapter 16, Problem 2}. This 
+sensor fusion led to:
+
+$$\^{x} = 10.557142857142857$$
+$$\^{y} = 18.18695652173913$$
+$$x_{var} = 0.02857142857142857$$
+$$y_{var} = 0.03260869565217391$$
+
+Which can also be seen in Figure \ref{fig:p17_2}. We can also find the mean of 
+$x$ and $y$ given the three initial measurements and can use them to find the 
+covariance using:
+
+$$\ddfrac{\sum_{i=1}^{3} (\mu_x - x_i) * (\mu_y - y_i)}{3}$$
+
+So putting it all together we end up with the covariance matrix:
+
+\[
+P =
+  \begin{bmatrix}
+    0.02857142857142857 & -0.1694444444444446 \\
+    -0.1694444444444446 & 0.03260869565217391
+  \end{bmatrix}
+\]
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=2.5]{problem17_2_data}
+    \caption{Problem 17.2 Estimates}
+    \label{fig:p17_2}
+\end{figure}
 
 \subsection{Problem 3}
 asdf

@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def problem17_3():
@@ -8,49 +9,61 @@ def problem17_3():
 
     def updateF(x):
         return np.array([[1.0, 0.1],
-                        [0.1 * np.sin(x), 1.0]])
+                         [0.1 * np.sin(x), 1.0]])
+
     # Time information
     dt = 0.1
     t = np.arange(0, 2 * np.pi + dt, dt)  # 64 points
+    N = len(t)
 
     # Starting data
     V = np.array([[0.2, 0.0],
-                 [0.0, 0.2]])
+                  [0.0, 0.2]])
     W = 0.25
-    H = np.array([1, 0])
+    H = np.array([[1, 0],
+                  [0, 0]])
 
-    x0 = np.array(0, 0)
+    x_hat0 = np.array([0, 0])
 
-    P = np.array([[0.0, 0.0],
-                  [0.0, 0.0]])
+    P = np.array([[1.0, 0.0],
+                  [0.0, 1.0]])
 
-    z = np.array([1.15, 0.5])
+    # Generate random numbers
+    mu1, sigma1 = 0.0, 0.2
+    mu2, sigma2 = 0.0, 0.25
 
-    # Predict State
-    x_hat0 = updateXhat0(x0[0], x0[1], 0)
+    q = np.random.normal(mu1, sigma1, N)
+    r = np.random.normal(mu2, sigma2, N)
 
-    # Predict estimate covariance
-    P0 = updateP0(V, updateF(x0[0]), P)
+    # Plot arrays
+    states = np.zeros((N, 2))
+    og_val = np.zeros((N, 2))
 
-    # Optimal Kalman gain
-    K = updateK(H, P0, W)
+    for i in range(N):
+        # Predict State
+        est = updateXhat0(x_hat0[0], x_hat0[1], t[i])
+        x_hat0 = est + q[i]
 
-    # Update state estimate
-    x_hat1 = updateXhat1(x_hat0, K, z)
+        # Predict estimate covariance
+        P = updateP0(V, updateF(x_hat0[0]), P)
 
-    # Update estimate covariance
-    P1 = updateP1(np.identity(2), K, H, P0)
+        # Optimal Kalman gain
+        K = updateK(H, P, W)
 
-    print()
-    print('x_hat0: {}'.format(x_hat0))
-    print('P =     {}'.format(P0[0]))
-    print('        {}'.format(P0[1]))
-    print('K =     {}'.format(K[0]))
-    print('        {}'.format(K[1]))
-    print('x_hat1: {}'.format(x_hat1))
-    print('P =     {}'.format(P1[0]))
-    print('        {}'.format(P1[1]))
-    print()
+        # Update state estimate
+        z = x_hat0 + r[i]
+        x_hat1 = updateXhat1(x_hat0, K, z)
+
+        # Update estimate covariance
+        P = updateP1(np.identity(2), K, H, P)
+
+        # Add to plot arrays
+        states[i] = x_hat1
+        og_val[i] = est
+
+    # Plot data points
+    plt.plot(t, og_val, 'r.', t, states, 'b-')
+    plt.show()
 
 
 def sanityCheck():
@@ -72,8 +85,8 @@ def sanityCheck():
 
     x0 = np.array([1, 1])
 
-    P0 = np.array([[0.5, 0.0],
-                   [0.0, 0.5]])
+    P = np.array([[0.5, 0.0],
+                  [0.0, 0.5]])
 
     z = np.array([1.15, 0.5])
 
@@ -81,27 +94,28 @@ def sanityCheck():
     x_hat0 = updateXhat0(x0[0], x0[1], 0)
 
     # Predict estimate covariance
-    P0 = updateP0(V, updateF(x0[0]), P0)
+    P = updateP0(V, updateF(x0[0]), P)
+
+    print()
+    print('x_hat0: {}'.format(x_hat0))
+    print('P =     {}'.format(P[0]))
+    print('        {}'.format(P[1]))
 
     # Optimal Kalman gain
-    K = updateK(H, P0, W)
+    K = updateK(H, P, W)
 
     # Update state estimate
     fake_x_hat = np.array([1.1, 0.45969769])
     x_hat1 = updateXhat1(fake_x_hat, K, z)
 
     # Update estimate covariance
-    P1 = updateP1(np.identity(2), K, H, P0)
+    P = updateP1(np.identity(2), K, H, P)
 
-    print()
-    print('x_hat0: {}'.format(x_hat0))
-    print('P =     {}'.format(P0[0]))
-    print('        {}'.format(P0[1]))
     print('K =     {}'.format(K[0]))
     print('        {}'.format(K[1]))
     print('x_hat1: {}'.format(x_hat1))
-    print('P =     {}'.format(P1[0]))
-    print('        {}'.format(P1[1]))
+    print('P =     {}'.format(P[0]))
+    print('        {}'.format(P[1]))
     print()
 
 
@@ -124,5 +138,5 @@ def updateP1(I, K, H, P0):
 
 
 if __name__ == '__main__':
-    # updateF(1)
-    sanityCheck()
+    # sanityCheck()
+    problem17_3()

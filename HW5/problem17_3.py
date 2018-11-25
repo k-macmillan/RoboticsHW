@@ -62,8 +62,39 @@ def problem17_3():
         og_val[i] = est
 
     # Plot data points
-    plt.plot(t, og_val, 'r.', t, states, 'b-')
+    fig = plt.figure()
+    plt.plot(t, og_val[:, 0], 'b-', label='Actual')
+    plt.plot(t, states[:, 0], 'r.', label='Observed')
+    plt.ylabel('$x$')
+    plt.xlabel('$t$')
+    plt.legend()
+    fig.savefig('problem17_3_chart_x',
+                format='pdf',
+                dpi=1200)
     plt.show()
+
+    plt.gcf().clear()
+    fig2 = plt.figure()
+    plt.plot(t, og_val[:, 1], 'b-', label='Actual')
+    plt.plot(t, states[:, 1], 'r.', label='Observed')
+    plt.ylabel('$y$')
+    plt.xlabel('$t$')
+    plt.legend()
+    fig2.savefig('problem17_3_chart_y',
+                 format='pdf',
+                 dpi=1200)
+    plt.show()
+
+    plt.gcf().clear()
+    fig3 = plt.figure()
+    plt.plot(t, og_val, 'b-', label='Actual')
+    plt.plot(t, states, 'r.', label='Observed')
+    plt.ylabel('$xy$')
+    plt.xlabel('$t$')
+    plt.legend()
+    fig3.savefig('problem17_3_chart',
+                 format='pdf',
+                 dpi=1200)
 
 
 def sanityCheck():

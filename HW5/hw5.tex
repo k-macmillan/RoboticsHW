@@ -228,7 +228,44 @@ P =
 \end{figure}
 
 \subsection{Problem 3}
-asdf
+Lecture slide \href{https://d2l.sdbor.edu/content/enforced/2018FA/1139913-CENG-CSC-415-515-M001-2018FAIntroductiontoRobot/Robotics_Kalman.pdf}{58} is where I began for this problem. 
+
+\textbf{Step 1}: Discretize
+
+This is accomplished with the \href{https://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus#Geometric_meaning}{Fundamental Theorem of Calculus}.
+
+$$y_n = \frac{x_{n+1} - x_n}{0.1}$$
+$$\frac{y_{n+1} - y_n}{0.1} = -cos(x_n) + 0.5sin(t_n)$$
+
+\textbf{Step 2}: Solve for $n + 1$
+
+This is done with some simple algebra to move the terms around.
+
+$$x_{n+1} = x_n + 0.1y_n$$
+$$y_{n+1} = y_n - cos(x_n) + 0.5sin(t_n)$$
+
+\textbf{Step 3}: Partial derivatives
+
+$$
+\[
+F =
+  \begin{bmatrix}
+    \frac{\partial t}{\partial x} \big(x_n + 0.1y_n\big) & \frac{\partial t}{\partial y} \big(x_n + 0.1y_n\big) \\
+    \frac{\partial t}{\partial x} \big(y_n - 0.1cos(x_n) + 0.5sin(t_n)\big) & \frac{\partial t}{\partial y} \big(y_n - 0.1cos(x_n) + 0.5sin(t_n) \big)
+  \end{bmatrix}
+\]
+$$
+
+Which yields:
+$$
+\[
+F =
+  \begin{bmatrix}
+    1.0 & 0.1 \\
+    0.1sin(x_n) & 1.0
+  \end{bmatrix}
+\]
+$$
 
 
 \subsection{Problem 4}

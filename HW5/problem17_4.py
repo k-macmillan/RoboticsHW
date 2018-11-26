@@ -51,19 +51,19 @@ class problem17_4a():
 
     def setWS(self, t):
         """Given a time, return L, R wheelspeeds"""
-        if t <= 5:
+        if t <= 5.0:
             self.w1 = 3
             self.w2 = 3
-        elif t <= 6:
+        elif t <= 6.0:
             self.w1 = 1
             self.w2 = -1
-        elif t <= 10:
+        elif t <= 10.0:
             self.w1 = 3
             self.w2 = 3
-        elif t <= 11:
+        elif t <= 11.0:
             self.w1 = -1
             self.w2 = 1
-        elif t <= 16:
+        else:  #  t <= 16.0
             self.w1 = 3
             self.w2 = 3
 
@@ -87,7 +87,7 @@ class problem17_4a():
         return ret_val
 
     def updateXhat1(self, z):
-        self.xhat1 = self.x_hat0 + np.matmul(self.K, z - self.xhat0)
+        self.xhat1 = self.xhat0 + np.matmul(self.K, (z - self.xhat0).T)
 
     def updateP1(self):
         self.P = np.matmul(self.I - np.matmul(self.K, self.H), self.P)
@@ -96,7 +96,7 @@ class problem17_4a():
         # Plot arrays
         actual = np.zeros((self.N, 3))
         predict = np.zeros((self.N, 3))
-        obs = np.zeros((self.N))
+        obs = np.zeros((self.N, 3))
 
         # For each time in t
         for i in range(self.N):
@@ -106,6 +106,7 @@ class problem17_4a():
             # Predict State
             self.updateXhat0()
             self.xhat0 = np.add(self.xhat0, self.phy_noise[i])  # Verified working
+            # print(self.xhat0)
             actual[i] = self.xhat0[0]
 
             # Predict estimate covariance
@@ -116,39 +117,29 @@ class problem17_4a():
             self.updateK()
 
             # Update state estimate
-            z = np.add(self.xhat0, self.obs_noise[i])
+            z = self.xhat0
+            z[0][0] += self.obs_noise[i][0]
+            z[0][1] += self.obs_noise[i][1]
             self.updateXhat1(z)
 
             # Update estimate covariance
             self.updateP1()
 
             # Add to plot arrays
-            predict[i] = self.x_hat1[0]
+            predict[i] = self.xhat1[0]
             obs[i] = z
 
         # Plot data points
         fig = plt.figure()
-        plt.plot(self.t, obs, 'r.', label='Observed')
-        plt.plot(self.t, predict[:, 0], 'g-', label='Predicted')
-        plt.plot(self.t, actual[:, 0], 'b-', label='Actual')
+        plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
+        plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
+        plt.plot(actual[:,0], actual[:,1], 'b-', label='Actual')
         plt.ylabel('$x$')
         plt.xlabel('$t$')
         plt.legend()
         fig.savefig('problem17_4a_x',
                     format='pdf',
                     dpi=1200)
-        plt.show()
-
-        plt.gcf().clear()
-        fig2 = plt.figure()
-        plt.plot(self.t, predict[:, 1], 'g-', label='Predicted')
-        plt.plot(self.t, actual[:, 1], 'b-', label='Actual')
-        plt.ylabel('$y$')
-        plt.xlabel('$t$')
-        plt.legend()
-        fig2.savefig('problem17_4a_y',
-                     format='pdf',
-                     dpi=1200)
         plt.show()
 
 

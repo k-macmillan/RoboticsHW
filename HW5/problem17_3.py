@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 def problem17_3():
     # Specific functions to the problem
     def updateXhat0(x, y, t):
-        return np.array([x + 0.1 * y, y - 0.1 * np.cos(x) + 0.5 * np.sin(t)])
+        return np.array([[x + 0.1 * y, y - 0.1 * np.cos(x) + 0.05 * np.sin(t)]])
 
     def updateF(x):
         return np.array([[1.0, 0.1],
@@ -20,51 +20,54 @@ def problem17_3():
     V = np.array([[0.2, 0.0],
                   [0.0, 0.2]])
     W = 0.25
-    H = np.array([[1, 0],
-                  [0, 0]])
+    H = np.array([[1, 0]])
+    # H = np.array([[1, 0],
+    #               [0, 0]])
 
-    x_hat0 = np.array([0, 0])
+    x_hat0 = np.array([[0, 0]])
 
     P = np.array([[1.0, 0.0],
                   [0.0, 1.0]])
 
     # Generate random numbers
-    mu1, sigma1 = 0.0, 0.2
-    mu2, sigma2 = 0.0, 0.25
+    mu1, sigma1 = 0.0, 0.447213595
+    mu2, sigma2 = 0.0, 0.5
 
-    q = np.random.normal(mu1, sigma1, N)
-    r = np.random.normal(mu2, sigma2, N)
+    r = np.random.normal(mu1, sigma1, N)
+    q = np.random.normal(mu2, sigma2, N)
 
     # Plot arrays
+    actual = np.zeros((N, 2))
     states = np.zeros((N, 2))
-    og_val = np.zeros((N, 2))
+    obs = np.zeros((N))
 
     for i in range(N):
         # Predict State
-        est = updateXhat0(x_hat0[0], x_hat0[1], t[i])
-        x_hat0 = est + q[i]
+        x_hat0 = updateXhat0(x_hat0[0][0], x_hat0[0][1], t[i]) + r[i]
+        actual[i] = x_hat0[0]
 
         # Predict estimate covariance
-        P = updateP0(V, updateF(x_hat0[0]), P)
+        P = updateP0(V, updateF(x_hat0[0][0]), P)
 
         # Optimal Kalman gain
         K = updateK(H, P, W)
 
         # Update state estimate
-        z = x_hat0 + r[i]
+        z = x_hat0[0][0] + q[i]
         x_hat1 = updateXhat1(x_hat0, K, z)
 
         # Update estimate covariance
         P = updateP1(np.identity(2), K, H, P)
 
         # Add to plot arrays
-        states[i] = x_hat1
-        og_val[i] = est
+        states[i] = x_hat1[0]
+        obs[i] = z
 
     # Plot data points
     fig = plt.figure()
-    plt.plot(t, og_val[:, 0], 'b-', label='Actual')
-    plt.plot(t, states[:, 0], 'r.', label='Observed')
+    plt.plot(t, obs, 'r.', label='Observed')
+    plt.plot(t, states[:, 0], 'g-', label='Predicted')
+    plt.plot(t, actual[:, 0], 'b-', label='Actual')
     plt.ylabel('$x$')
     plt.xlabel('$t$')
     plt.legend()
@@ -75,8 +78,8 @@ def problem17_3():
 
     plt.gcf().clear()
     fig2 = plt.figure()
-    plt.plot(t, og_val[:, 1], 'b-', label='Actual')
-    plt.plot(t, states[:, 1], 'r.', label='Observed')
+    plt.plot(t, states[:, 1], 'g-', label='Predicted')
+    plt.plot(t, actual[:, 1], 'b-', label='Actual')
     plt.ylabel('$y$')
     plt.xlabel('$t$')
     plt.legend()
@@ -87,8 +90,9 @@ def problem17_3():
 
     plt.gcf().clear()
     fig3 = plt.figure()
-    plt.plot(t, og_val, 'b-', label='Actual')
-    plt.plot(t, states, 'r.', label='Observed')
+    plt.plot(t, obs, 'r.', label='Observed')
+    plt.plot(t, states, 'g-', label='Predicted')
+    plt.plot(t, actual, 'b-', label='Actual')
     plt.ylabel('$xy$')
     plt.xlabel('$t$')
     plt.legend()
@@ -152,7 +156,7 @@ def sanityCheck():
 
 # Common equations
 def updateXhat1(x_hat, K, z):
-    return x_hat + np.matmul(K, z - x_hat)
+    return x_hat + K * (z - x_hat[0])
 
 
 def updateP0(V, F, P):

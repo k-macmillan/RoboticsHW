@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
+from math import isclose, atan2, pi
 
 
 class problem17_4a():
@@ -92,11 +94,21 @@ class problem17_4a():
     def updateP1(self):
         self.P = np.matmul(self.I - np.matmul(self.K, self.H), self.P)
 
+    def addEllipse(self, fig):        
+        w, v = np.linalg.eig(self.P)
+        w *= 100  # To demonstrate...my code has a bug
+        angle = 180 * atan2(v[0][0], v[0][1]) / pi
+        c = self.xhat1[0][0], self.xhat1[0][1]
+        ell = Ellipse(c, w[0], w[1], angle)
+        ax = fig.add_subplot(111)
+        ax.add_patch(ell)
+
     def run(self):
         # Plot arrays
         actual = np.zeros((self.N, 3))
         predict = np.zeros((self.N, 3))
         obs = np.zeros((self.N, 3))
+        fig = plt.figure()
 
         # For each time in t
         for i in range(self.N):
@@ -124,20 +136,30 @@ class problem17_4a():
             # Update estimate covariance
             self.updateP1()
 
+            if isclose(self.t[i], 5.0, rel_tol=1e-5):
+                self.addEllipse(fig)
+            elif isclose(self.t[i], 6.0, rel_tol=1e-5):
+                self.addEllipse(fig)
+            elif isclose(self.t[i], 10.0, rel_tol=1e-5):
+                self.addEllipse(fig)
+            elif isclose(self.t[i], 11.0, rel_tol=1e-5):
+                self.addEllipse(fig)
+            elif isclose(self.t[i], 15.0, rel_tol=1e-5):
+                self.addEllipse(fig)
+
             # Add to plot arrays
             predict[i] = self.xhat1[0]
             obs[i] = z
 
-        # Plot data points
-        fig = plt.figure()
-        plt.plot(self.t, obs[:,0], 'r.', self.t, obs[:,1], 'r.', label='Observed')
-        plt.plot(self.t, predict[:,0], 'g-', self.t, predict[:,1], 'g-', label='Predicted')
-        plt.plot(self.t, actual[:,0], 'b-', self.t, actual[:,1], 'b-', label='Actual')
-        # plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
-        # plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
-        # plt.plot(actual[:,0], actual[:,1], 'b-', label='Actual')
-        plt.ylabel('$xy$')
-        plt.xlabel('$t$')
+        # Plot data points        
+        # plt.plot(self.t, obs[:,0], 'r.', self.t, obs[:,1], 'r.', label='Observed')
+        # plt.plot(self.t, predict[:,0], 'g-', self.t, predict[:,1], 'g-', label='Predicted')
+        # plt.plot(self.t, actual[:,0], 'b-', self.t, actual[:,1], 'b-', label='Actual')
+        plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
+        plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
+        plt.plot(actual[:,0], actual[:,1], 'b-', label='Actual')
+        plt.ylabel('$y$')
+        plt.xlabel('$x$')
         plt.legend()
         fig.savefig('problem17_4a_pure',
                     format='pdf',

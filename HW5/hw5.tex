@@ -335,49 +335,97 @@ which can be seen in Figure \ref{fig:p17_4a_vnoise_good}.
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.75]{problem17_4a_pure}
-    \caption{Problem 17.4 Robot Planned Path}
+    \caption{Robot Planned Path}
     \label{fig:p17_4a_planned}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.75]{problem17_4a_Vnoise_bad}
-    \caption[Problem 17.4 Robot Planned Path]{Robot planned path when V is applied}
+    \caption[Robot Planned Path (bad)]{Robot planned path when V is applied}
     \label{fig:p17_4a_vnoise_bad}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.75]{problem17_4a_Vnoise_good}
-    \caption[Problem 17.4 Robot Planned Path]{Robot planned path when V is divided by 100}
+    \caption[Robot Planned Path (good)]{Robot planned path when V is divided by 100}
     \label{fig:p17_4a_vnoise_good}
 \end{figure}
 
 \subsubsection{Problem 4b}
+The basic Differential Drive equations can be discretized for application 
+towards the EKF as follows:
+
+$$f1 = x_{k+1} = x_k + \frac{r\Delta t}{2}\(\omega_{1, k} + \omega_{2, k})cos(\theta_k)$$
+$$f2 = y_{k+1} = y_k + \frac{r\Delta t}{2}(\omega_{1, k} + \omega_{2, k})sin(\theta_k)$$
+$$f3 = \theta_{k+1} = \theta_k + \frac{r\Delta t}{2}(\omega_{1, k} - \omega_{2, k})$$
+
+Then take the partial derivatives to get Equation \hyperref[eq:F]{\textit{F}}.
+
+\begin{equation}{\label{eq:F}}
+\[
+F =
+  \begin{bmatrix}
+    1 & 0 & -\frac{r\Delta t}{2}(\omega_{1, k} + \omega_{2, k})sin(\theta_k) \\
+    0 & 1 & \frac{r\Delta t}{2}(\omega_{1, k} + \omega_{2, k})cos(\theta_k) \\
+    0 & 0 & 1
+  \end{bmatrix}
+\]
+\end{equation}
+
+We then apply the following 
+\href{http://roboscience.org/book/html/AdvFiltering/ExtendedKalmanFilter.html}{sequence of steps}:
+
+\begin{enumerate}
+    \item $\^{x}_{k|k-1} = f(\^{x}_{k-1|k-1}, u_k)$
+    \item $P_{k|k-1} = F_kP_{k-1|k-1}F^T_k + V_k$
+    \item $K_k = P_{k|k-1}H^T_k(H_kP_{k|k-1}H^T_k + W_k)^{-1}$
+    \item $\^{x}_{k|k} = \^{x}_{k|k-1} + K_k\big(z_k - h(\^{x}_{k|k-1})\big)$
+    \item $P_{k|k} = (I - K_kH_k)P_{k|k-1}$
+\end{enumerate}
+
+My code follows those steps pretty much exactly. There are more efficient ways to code it but for this assignment it's good. There are EKF libraries out there if I need efficiency.
 
 
 \subsubsection{Problem 4c}
-When $V = V / 100$ we get the image in Figure \ref{fig:p17_4a_xy}
+When $V = V / 100$ we get the image in Figure \ref{fig:p17_4a_xy}, which is what I believe the intended image was here.
+
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.75]{problem17_4a_xy}
-    \caption{Problem 17.4 Robot x-y positions}
+    \caption{Robot x-y positions}
     \label{fig:p17_4a_xy}
 \end{figure}
 
 \subsubsection{Problem 4d}
-Figure \ref{fig:p17_4a_xyt} shows xy on the vertical axis and time on the 
+Figure \ref{fig:p17_4a_xyt} shows $x$-$y$ on the vertical axis and time on the 
 horizontal axis.
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.75]{problem17_4a_xy_t}
-    \caption{Problem 17.4 Robot x-y over time}
+    \caption{Robot x-y over time}
     \label{fig:p17_4a_xyt}
 \end{figure}
 
 \subsubsection{Problem 4e}
-asdf
+Figure \ref{fig:p17_4a_ellipse} shows the ellipses on the filter. Something is 
+slightly off with my filter so I threw a scaler at the ellispses so they would 
+be visible. I used the same code from 17.3 with only minor modifications but 
+something broke and I am out of time.
+
+And on that note, the examples all use full $H$ matrices (observing all) whereas 
+the homework problems utilized 1/2 and 2/3 sensor data which can lead to very 
+messed up filters. You can't just pad it with zeros and I spend too long on 
+this homework as is to track down what specifically causes this.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.75]{problem17_4a_ellipse}
+    \caption{Uncertainty Ellipses}
+    \label{fig:p17_4a_ellipse}
+\end{figure}
 
 
 % \newpage

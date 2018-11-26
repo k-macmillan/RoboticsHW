@@ -22,11 +22,11 @@ class problem17_4a():
                            [0, 1, 0],
                            [0, 0, 0]])
         self.HT = self.H.T
-        self.P = np.array([[0.0, 0.0, 0.0],
-                           [0.0, 0.0, 0.0],
-                           [0.0, 0.0, 0.0]])
+        self.P = np.array([[2.0, 0.0, 0.0],
+                           [0.0, 1.0, 0.0],
+                           [0.0, 0.0, 0.5]])
         self.I = np.identity(3)
-        self.phy_noise = np.random.multivariate_normal([0, 0, 0], self.V, self.N)
+        self.phy_noise = np.random.multivariate_normal([0, 0, 0], self.V, self.N) / 100
         self.obs_noise = np.random.multivariate_normal([0, 0], self.W, self.N)
 
     def avgWS(self):
@@ -106,7 +106,6 @@ class problem17_4a():
             # Predict State
             self.updateXhat0()
             self.xhat0 = np.add(self.xhat0, self.phy_noise[i])  # Verified working
-            # print(self.xhat0)
             actual[i] = self.xhat0[0]
 
             # Predict estimate covariance
@@ -131,13 +130,16 @@ class problem17_4a():
 
         # Plot data points
         fig = plt.figure()
+        # plt.plot(self.t, obs, 'r.', label='Observed')
+        # plt.plot(self.t, predict, 'g-', label='Predicted')
+        # plt.plot(self.t, actual, 'b-', label='Actual')
         plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
         plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
         plt.plot(actual[:,0], actual[:,1], 'b-', label='Actual')
-        plt.ylabel('$x$')
+        plt.ylabel('$xy$')
         plt.xlabel('$t$')
         plt.legend()
-        fig.savefig('problem17_4a_x',
+        fig.savefig('problem17_4a_pure',
                     format='pdf',
                     dpi=1200)
         plt.show()

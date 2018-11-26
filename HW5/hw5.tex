@@ -325,34 +325,74 @@ direction of $x$ since it had no observations in $y$.
 \newpage
 \subsection{Problem 4}
 \subsubsection{Problem 4a}
-asdf
+Figure \ref{fig:p17_4a_planned} shows what the path would be with zero noise. 
+Figure \ref{fig:p17_4a_vnoise_bad} shows the path with the $V$ covariance 
+matrix supplied and applied to numpy's multivariate random generator. As you can 
+see the thing falls to pieces. I don't know why we would ``convert to meters'' 
+but it appears the only way to get a legitimate plot is to use $V = V / 100$, 
+which can be seen in Figure \ref{fig:p17_4a_vnoise_good}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.75]{problem17_4a_pure}
+    \caption{Problem 17.4 Robot Planned Path}
+    \label{fig:p17_4a_planned}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.75]{problem17_4a_Vnoise_bad}
+    \caption[Problem 17.4 Robot Planned Path]{Robot planned path when V is applied}
+    \label{fig:p17_4a_vnoise_bad}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.75]{problem17_4a_Vnoise_good}
+    \caption[Problem 17.4 Robot Planned Path]{Robot planned path when V is divided by 100}
+    \label{fig:p17_4a_vnoise_good}
+\end{figure}
 
 \subsubsection{Problem 4b}
-asdf
+
 
 \subsubsection{Problem 4c}
-asdf
+When $V = V / 100$ we get the image in Figure \ref{fig:p17_4a_xy}
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.75]{problem17_4a_xy}
+    \caption{Problem 17.4 Robot x-y positions}
+    \label{fig:p17_4a_xy}
+\end{figure}
 
 \subsubsection{Problem 4d}
-asdf
+Figure \ref{fig:p17_4a_xyt} shows xy on the vertical axis and time on the 
+horizontal axis.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.75]{problem17_4a_xy_t}
+    \caption{Problem 17.4 Robot x-y over time}
+    \label{fig:p17_4a_xyt}
+\end{figure}
 
 \subsubsection{Problem 4e}
 asdf
 
 
-\newpage
-\section{\textbf{Chapter 18}}
-\subsection{Problem 1}
-\subsubsection{Problem 1.1}
-asdf
+% \newpage
+% \section{\textbf{Chapter 18}}
+% \subsection{Problem 1}
+% \subsubsection{Problem 1.1}
+% asdf
 
 
-\subsubsection{Problem 1.2}
-asdf
+% \subsubsection{Problem 1.2}
+% asdf
 
 
-\subsubsection{Problem 1.3}
-asdf
+% \subsubsection{Problem 1.3}
+% asdf
 
 
 \end{document}

@@ -71,9 +71,7 @@ def problem17_3():
     plt.ylabel('$x$')
     plt.xlabel('$t$')
     plt.legend()
-    fig.savefig('problem17_3_chart_x',
-                format='pdf',
-                dpi=1200)
+    fig.savefig('problem17_3_chart_x.eps')
     plt.show()
 
     plt.gcf().clear()
@@ -83,22 +81,8 @@ def problem17_3():
     plt.ylabel('$y$')
     plt.xlabel('$t$')
     plt.legend()
-    fig2.savefig('problem17_3_chart_y',
-                 format='pdf',
-                 dpi=1200)
+    fig2.savefig('problem17_3_chart_y.eps')
     plt.show()
-
-    plt.gcf().clear()
-    fig3 = plt.figure()
-    plt.plot(t, obs, 'r.', label='Observed')
-    plt.plot(t, states, 'g-', label='Predicted')
-    plt.plot(t, actual, 'b-', label='Actual')
-    plt.ylabel('$xy$')
-    plt.xlabel('$t$')
-    plt.legend()
-    fig3.savefig('problem17_3_chart',
-                 format='pdf',
-                 dpi=1200)
 
 
 def sanityCheck():

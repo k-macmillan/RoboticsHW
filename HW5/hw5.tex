@@ -227,6 +227,8 @@ P =
     \label{fig:p17_2}
 \end{figure}
 
+
+\newpage
 \subsection{Problem 3}
 Lecture slide \href{https://d2l.sdbor.edu/content/enforced/2018FA/1139913-CENG-CSC-415-515-M001-2018FAIntroductiontoRobot/Robotics_Kalman.pdf}{58} is where I began for this problem. 
 
@@ -266,7 +268,61 @@ F =
 \]
 $$
 
+Using those equations and matrices we can now apply the Extended Kalman Filter 
+steps.
 
+\begin{code}
+\label{code:17_3}
+\begin{minted}{python}
+    # For each time step
+    for i in range(N):
+        # Predict State
+        x_hat0 = updateXhat0(x_hat0[0][0], x_hat0[0][1], t[i]) + r[i]
+
+        # Predict estimate covariance
+        P = updateP0(V, updateF(x_hat0[0][0]), P)
+
+        # Optimal Kalman gain
+        K = updateK(H, P, W)
+
+        # Update state estimate
+        z = x_hat0[0][0] + q[i]
+        x_hat1 = updateXhat1(x_hat0, K, z)
+
+        # Update estimate covariance
+        P = updateP1(np.identity(2), K, H, P)
+\end{minted}
+\end{code}
+
+The code for \hyperref[code:17_3]{Chapter 17, Problem 3} shows the steps we take 
+to obtain a filtered prediction. Figure \ref{fig:p17_3x} shows the $x$ component 
+and Figure \ref{fig:p17_3y} shows the $y$ component. The $y$ component did not 
+have an observation, so the prediction is not as close as the $x$ component. The 
+function calls just perform the necessary procedure to complete that step of the 
+Extended Kalman Filter. Code for this problem can be found 
+\href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem17_3.py}{here}.
+
+Also to note is that the filter predicts $y$ will follow in the general 
+direction of $x$ since it had no observations in $y$.
+
+\newpage
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=1]{problem17_3_x}
+    \caption{Problem 17.3 Kalman Filtering 1}
+    \label{fig:p17_3x}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=1]{problem17_3_y}
+    \caption{Problem 17.3 Kalman Filtering 2}
+    \label{fig:p17_3y}
+\end{figure}
+
+
+\newpage
 \subsection{Problem 4}
 \subsubsection{Problem 4a}
 asdf

@@ -130,12 +130,12 @@ class problem17_4a():
 
         # Plot data points
         fig = plt.figure()
-        # plt.plot(self.t, obs, 'r.', label='Observed')
-        # plt.plot(self.t, predict, 'g-', label='Predicted')
-        # plt.plot(self.t, actual, 'b-', label='Actual')
-        plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
-        plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
-        plt.plot(actual[:,0], actual[:,1], 'b-', label='Actual')
+        plt.plot(self.t, obs[:,0], 'r.', self.t, obs[:,1], 'r.', label='Observed')
+        plt.plot(self.t, predict[:,0], 'g-', self.t, predict[:,1], 'g-', label='Predicted')
+        plt.plot(self.t, actual[:,0], 'b-', self.t, actual[:,1], 'b-', label='Actual')
+        # plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
+        # plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
+        # plt.plot(actual[:,0], actual[:,1], 'b-', label='Actual')
         plt.ylabel('$xy$')
         plt.xlabel('$t$')
         plt.legend()

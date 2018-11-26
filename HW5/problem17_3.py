@@ -71,7 +71,9 @@ def problem17_3():
     plt.ylabel('$x$')
     plt.xlabel('$t$')
     plt.legend()
-    fig.savefig('problem17_3_chart_x.eps')
+    fig.savefig('problem17_3_chart_x',
+                format='pdf',
+                dpi=1200)
     plt.show()
 
     plt.gcf().clear()
@@ -81,7 +83,9 @@ def problem17_3():
     plt.ylabel('$y$')
     plt.xlabel('$t$')
     plt.legend()
-    fig2.savefig('problem17_3_chart_y.eps')
+    fig2.savefig('problem17_3_chart_y',
+                 format='pdf',
+                 dpi=1200)
     plt.show()
 
 

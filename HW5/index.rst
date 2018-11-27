@@ -20,7 +20,7 @@ When we do not know how a robot will behave we cannot use KF/EKF because they
 mandate the use of a *model*. Enter `Kalman`_-`Takens`_ (KT). Why would we need 
 a model-free version of a Kalman Filter? Because sometimes you cannot model an 
 environment, such as when it is dynamic. There is also the matter of robustness. 
-As explained earlier EKF can simply break apart in some cases.
+As explained earlier, EKF can simply break apart in some cases.
 
 .. I can't figure out how to get a hyphen allowed by rst
 .. _Kalman:
@@ -42,13 +42,13 @@ KT will use the step of approximation to feed Takens:
 A non-parametric prediction method is then applied to construct a model in order 
 to fascilitate filtering.
 
-This method do *better than models* in some cases. Many models will have error. 
-A dynamic system or ones such as our robot moving and we are not accounting 
-for friction, air resistance, etc. are examples. This method can do a *better* 
-job approximating models that are more prone to error. Say if your model does 
-not take into account a robot driving over **oil**. The model will fall to 
-pieces but KT would be robust and adapt to the new model's lower static 
-coefficient of friction (loss of traction).
+This method can do *better than models* in some cases. Many models will have 
+error, and EKF can fail under model error. A dynamic system or ones such as our 
+robot moving and we are not accounting for friction, air resistance, etc. are 
+examples of model error. This method can do a *better* job approximating models 
+that are more prone to error. For example if your model does not take into 
+account a robot driving over **oil**. The model will fall to pieces but KT would 
+be robust and adapt to the new model's lower static coefficient of friction 
+(loss of traction).
 
-.. I'd have loved to expand on this further but the rest of the homework ate up 
-.. too much time.
+.. This is only scratching the surface, a brief introduction to a powerful topic

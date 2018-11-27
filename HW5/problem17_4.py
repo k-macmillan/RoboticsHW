@@ -4,7 +4,7 @@ from matplotlib.patches import Ellipse
 from math import isclose, atan2, pi
 
 
-class problem17_4a():
+class problem17_4():
     def __init__(self):
         self.w1 = 3
         self.w2 = 3
@@ -21,14 +21,13 @@ class problem17_4a():
                            [0.02, 0.07]])
         self.xhat0 = np.array([[0.0, 0.0, 0.0]])
         self.H = np.array([[1, 0, 0],
-                           [0, 1, 0],
-                           [0, 0, 0]])
+                           [0, 1, 0]])
         self.HT = self.H.T
         self.P = np.array([[2.0, 0.0, 0.0],
                            [0.0, 1.0, 0.0],
                            [0.0, 0.0, 0.5]])
         self.I = np.identity(3)
-        self.phy_noise = np.random.multivariate_normal([0, 0, 0], self.V, self.N) / 100
+        self.phy_noise = np.random.multivariate_normal([0, 0, 0], self.V, self.N) / 20
         self.obs_noise = np.random.multivariate_normal([0, 0], self.W, self.N)
 
     def avgWS(self):
@@ -74,11 +73,10 @@ class problem17_4a():
 
     def updateK(self):
         HP = np.matmul(self.H, self.P)
-        HPHT = np.matmul(HP, self.HT)[:2, :2]  # Strip zeroes from HPHT
-        PHT = np.matmul(self.P, self.HT)
+        HPHT = np.matmul(HP, self.HT)
         invHPHTW = np.linalg.inv(HPHT + self.W)
-        # Pad zeros back into HPHTW
-        self.K = np.matmul(PHT, self.padInv(invHPHTW, self.I))
+        HTinvHPHTW = np.matmul(self.H.T, invHPHTW)
+        self.K = np.matmul(self.P, HTinvHPHTW)
 
     def padInv(self, a, b):
         """numpy.pad would have been nice but I don't have time to figure it out
@@ -89,14 +87,18 @@ class problem17_4a():
         return ret_val
 
     def updateXhat1(self, z):
-        self.xhat1 = self.xhat0 + np.matmul(self.K, (z - self.xhat0).T)
+        Z = np.array([[z[0][0] - self.xhat0[0][0]],
+                      [z[0][1] - self.xhat0[0][1]]])
+        self.xhat1 = self.xhat0 + np.matmul(self.K, Z)
 
     def updateP1(self):
         self.P = np.matmul(self.I - np.matmul(self.K, self.H), self.P)
 
-    def addEllipse(self, fig):        
+    def addEllipse(self, fig):
         w, v = np.linalg.eig(self.P)
-        w *= 100  # To demonstrate...my code has a bug
+        # w *= 100  # To demonstrate...my code has a bug
+        w *= 100
+        v *= 100
         angle = 180 * atan2(v[0][0], v[0][1]) / pi
         c = self.xhat1[0][0], self.xhat1[0][1]
         ell = Ellipse(c, w[0], w[1], angle)
@@ -107,7 +109,7 @@ class problem17_4a():
         # Plot arrays
         actual = np.zeros((self.N, 3))
         predict = np.zeros((self.N, 3))
-        obs = np.zeros((self.N, 3))
+        obs = np.zeros((self.N, 2))
         fig = plt.figure()
 
         # For each time in t
@@ -128,38 +130,43 @@ class problem17_4a():
             self.updateK()
 
             # Update state estimate
-            z = self.xhat0
-            z[0][0] += self.obs_noise[i][0]
-            z[0][1] += self.obs_noise[i][1]
+            z = np.array([[self.xhat0[0][0] + self.obs_noise[i][0],
+                          self.xhat0[0][1] + self.obs_noise[i][1]]])
             self.updateXhat1(z)
 
             # Update estimate covariance
             self.updateP1()
 
-            if isclose(self.t[i], 5.0, rel_tol=1e-5):
-                self.addEllipse(fig)
-            elif isclose(self.t[i], 6.0, rel_tol=1e-5):
-                self.addEllipse(fig)
-            elif isclose(self.t[i], 10.0, rel_tol=1e-5):
-                self.addEllipse(fig)
-            elif isclose(self.t[i], 11.0, rel_tol=1e-5):
-                self.addEllipse(fig)
-            elif isclose(self.t[i], 15.0, rel_tol=1e-5):
-                self.addEllipse(fig)
+            # if isclose(self.t[i], 0.0, rel_tol=1e-6):
+            #     self.addEllipse(fig)
+            # elif isclose(self.t[i], 6.0, rel_tol=1e-6):
+            #     self.addEllipse(fig)
+            # elif isclose(self.t[i], 8.0, rel_tol=1e-6):
+            #     self.addEllipse(fig)
+            # elif isclose(self.t[i], 11.0, rel_tol=1e-6):
+            #     self.addEllipse(fig)
+            # elif isclose(self.t[i], 15.0, rel_tol=1e-6):
+            #     self.addEllipse(fig)
 
             # Add to plot arrays
             predict[i] = self.xhat1[0]
             obs[i] = z
+            # obs[i] = np.array([[z[0][0], z[0][1]]])
 
         # Plot data points        
-        # plt.plot(self.t, obs[:,0], 'r.', self.t, obs[:,1], 'r.', label='Observed')
-        # plt.plot(self.t, predict[:,0], 'g-', self.t, predict[:,1], 'g-', label='Predicted')
-        # plt.plot(self.t, actual[:,0], 'b-', self.t, actual[:,1], 'b-', label='Actual')
-        plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
-        plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
+        # Ellipses
+        # plt.plot(self.t, obs, 'r.', label='Observed')
+        # plt.plot(self.t, predict[:,2], 'g-', label='Predicted')
+        # plt.plot(self.t, actual[:,2], 'b-', label='Actual')
+        # X-Y
+        # plt.plot(obs[:,0], obs[:,1], 'r.', label='Observed')
+        # plt.plot(predict[:,0], predict[:,1], 'g-', label='Predicted')
         plt.plot(actual[:,0], actual[:,1], 'b-', label='Actual')
+        # Theta-T
+        # plt.plot(self.t, predict[:,2], 'g-', label='Predicted')
+        # plt.plot(self.t, actual[:,2], 'b-', label='Actual')
         plt.ylabel('$y$')
-        plt.xlabel('$x$')
+        plt.xlabel('$t$')
         plt.legend()
         fig.savefig('problem17_4a_pure',
                     format='pdf',
@@ -168,5 +175,5 @@ class problem17_4a():
 
 
 if __name__ == '__main__':
-    p17_4a = problem17_4a()
-    p17_4a.run()
+    p17_4 = problem17_4()
+    p17_4.run()

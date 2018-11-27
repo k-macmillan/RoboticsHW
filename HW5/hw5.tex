@@ -230,7 +230,9 @@ P =
 
 \newpage
 \subsection{Problem 3}
-Lecture slide \href{https://d2l.sdbor.edu/content/enforced/2018FA/1139913-CENG-CSC-415-515-M001-2018FAIntroductiontoRobot/Robotics_Kalman.pdf}{58} is where I began for this problem. 
+Lecture slide \href{https://d2l.sdbor.edu/content/enforced/2018FA/1139913-CENG-CSC-415-515-M001-2018FAIntroductiontoRobot/Robotics_Kalman.pdf}{58} is where I began for this problem. Code for this 
+problem can be found 
+\href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem17_3.py}{here}.
 
 \textbf{Step 1}: Discretize
 
@@ -324,13 +326,14 @@ direction of $x$ since it had no observations in $y$.
 
 \newpage
 \subsection{Problem 4}
+Code for this problem can be found 
+\href{https://github.com/macattackftw/RoboticsHW/blob/master/HW5/problem17_4.py}{here}.
 \subsubsection{Problem 4a}
 Figure \ref{fig:p17_4a_planned} shows what the path would be with zero noise. 
 Figure \ref{fig:p17_4a_vnoise_bad} shows the path with the $V$ covariance 
 matrix supplied and applied to numpy's multivariate random generator. As you can 
-see the thing falls to pieces. I don't know why we would ``convert to meters'' 
-but it appears the only way to get a legitimate plot is to use $V = V / 100$, 
-which can be seen in Figure \ref{fig:p17_4a_vnoise_good}.
+see the thing falls to pieces. We got direction from Dr. McGough to use 
+$V = V / 20$, which can be seen in Figure \ref{fig:p17_4a_vnoise_good}.
 
 \begin{figure}[h]
     \centering
@@ -349,7 +352,7 @@ which can be seen in Figure \ref{fig:p17_4a_vnoise_good}.
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.75]{problem17_4a_Vnoise_good}
-    \caption[Robot Planned Path (good)]{Robot planned path when V is divided by 100}
+    \caption[Robot Planned Path (good)]{Robot planned path when V is divided by 20}
     \label{fig:p17_4a_vnoise_good}
 \end{figure}
 
@@ -389,42 +392,47 @@ My code follows those steps pretty much exactly. There are more efficient ways t
 
 
 \subsubsection{Problem 4c}
-When $V = V / 100$ we get the image in Figure \ref{fig:p17_4a_xy}, which is what I believe the intended image was here.
+Figure \ref{fig:p17_4_xy} shows the Extended Kalman Filtering of the 
+observations + physics. The green line is the predicted path. This image was 
+blown up so you could see the EKF path more easily.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.75]{problem17_4a_xy}
+    \makebox[\textwidth]{\includegraphics[width=\paperwidth]{problem17_4_xy}}
     \caption{Robot x-y positions}
-    \label{fig:p17_4a_xy}
+    \label{fig:p17_4_xy}
 \end{figure}
 
 \subsubsection{Problem 4d}
 Figure \ref{fig:p17_4a_xyt} shows $x$-$y$ on the vertical axis and time on the 
-horizontal axis.
+horizontal axis. Figure \ref{fig:p17_4_theta} shows theta over time. It wasn't 
+clear exactly what was desired for this plot. \verb|0.5 sec grid| did not make 
+sense to me or anyone I asked.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.75]{problem17_4a_xy_t}
+    \includegraphics[scale=1]{problem17_4a_xy_t}
     \caption{Robot x-y over time}
     \label{fig:p17_4a_xyt}
 \end{figure}
 
-\subsubsection{Problem 4e}
-Figure \ref{fig:p17_4a_ellipse} shows the ellipses on the filter. Something is 
-slightly off with my filter so I threw a scaler at the ellipses so they would 
-be visible. I used the same code from 17.3 with only minor modifications but 
-something broke and I am out of time.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=1]{problem17_4_theta}
+    \caption{Robot $\theta$ over time}
+    \label{fig:p17_4_theta}
+\end{figure}
 
-And on that note, the examples all use full $H$ matrices (observing all) whereas 
-the homework problems utilized 1/2 and 2/3 sensor data which can lead to very 
-messed up filters. You can't just pad it with zeros and I spend too long on 
-this homework as is to track down what specifically causes this.
+\subsubsection{Problem 4e}
+Figure \ref{fig:p17_4_ellipse} shows the ellipses on the filter. The ellipses 
+are barely visible so I blew them up with a large scaler so they could be seen. 
+The image was blown up so the EKF path would be more visible.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.75]{problem17_4a_ellipse}
+    \makebox[\textwidth]{\includegraphics[width=\paperwidth]{problem17_4_ellipse}}
     \caption{Uncertainty Ellipses}
-    \label{fig:p17_4a_ellipse}
+    \label{fig:p17_4_ellipse}
 \end{figure}
 
 

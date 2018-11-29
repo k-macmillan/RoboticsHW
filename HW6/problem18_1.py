@@ -11,38 +11,31 @@ class Problem18_1():
         self.y_min = 0
         self.y_max = 10
         self.eta = 1
+        self.g = 0.005
         self.start = (0, 5)
         self.goal = (15, 5)
         self.obstacles = []
         self.addObstacles()
 
     def diffObstacle1X(self, x, y):
-        return -(32 * x - 192) / (4 * x**2 -
-                                  48 * x +
-                                  y**2 +
-                                  156 -
-                                  8 * y)**2
+        top = -(32 * x - 192)
+        bot = (4 * x**2 - 48 * x + y**2 + 156 - 8 * y)**2
+        return top / bot
 
     def diffObstacle2X(self, x, y):
-        return -(162 * x - 1296) / (9 * x**2 -
-                                    144 * x +
-                                    y**2 +
-                                    603 -
-                                    12 * y)**2
+        top = -(162 * x - 1296)
+        bot = (9 * x**2 - 144 * x + y**2 + 603 - 12 * y)**2
+        return top / bot
 
     def diffObstacle1Y(self, x, y):
-        return -(8 * y - 32) / (4 * x**2 -
-                                48 * x +
-                                y**2 +
-                                156 -
-                                8 * y)**2
+        top = -(8 * y - 32)
+        bot = (4 * x**2 - 48 * x + y**2 + 156 - 8 * y)**2
+        return top / bot
 
     def diffObstacle2Y(self, x, y):
-        return -(18 * y - 108) / (9 * x**2 -
-                                  144 * x +
-                                  y**2 +
-                                  603 -
-                                  12 * y)**2
+        top = -(18 * y - 108)
+        bot = (9 * x**2 - 144 * x + y**2 + 603 - 12 * y)**2
+        return top / bot
 
     def diffFieldX(self, x):
         return 2 * (x - 15)
@@ -54,8 +47,8 @@ class Problem18_1():
         return (X - self.goal[0])**2 + ((Y - self.goal[1])**2) - 1
 
     def addObstacles(self):
-        self.obstacles.append((6, 4, 2, 20))
-        self.obstacles.append((8, 6, 3, 20))
+        self.obstacles.append((6, 4, 2))
+        self.obstacles.append((8, 6, 3))
 
     def circle(self, x, y, c):
         """c = (cx, cy, radius, cap)"""
@@ -78,23 +71,47 @@ class Problem18_1():
         self.Y = Y.flatten()
 
     def setDXDYDZ(self):
-        loops = np.arange(1, 200, 0.5)
-        x = []
-        y = []
-        dist = (self.start[0] - self.goal[0])**2 + (self.start[1] - self.goal[1])**2
-        for i in loops:
-            x.append(self.diffFieldX(i) + self.diffObstacle1X(i, i) + self.diffObstacle2X(i, i))
-            y.append(self.diffFieldY(i) + self.diffObstacle1Y(i, i) + self.diffObstacle2Y(i, i))
-        self.UxUy = (x, y)
+        loops = 1000
+        x = [self.start[0]]
+        y = [self.start[1]]
+        ddx = []
+        ddy = []
+        for i in range(loops):
+            # Calc partial with respect to x
+            dx = (self.diffFieldX(x[-1]) +
+                  self.diffObstacle1X(x[-1], y[-1]) +
+                  self.diffObstacle2X(x[-1], y[-1]))
+
+            # Calc partial with respect to y
+            dy = (self.diffFieldY(y[-1]) +
+                  self.diffObstacle1Y(x[-1], y[-1]) +
+                  self.diffObstacle2Y(x[-1], y[-1]))
+            dx *= self.g
+            dy *= self.g
+
+            # Made this to check gradients
+            ddx.append(dx)
+            ddy.append(dy)
+
+            x.append(x[-1] - dx)
+            y.append(y[-1] - dy)
+
+        # 'x' because it makes the code cleaner, then assigned to self.x
+        self.x = x
+        self.y = y
+        print('min dx: {}\t max dx: {}'.format(min(ddx), max(ddx)))
+        print('min dy: {}\t max dy: {}'.format(min(ddy), max(ddy)))
 
     def plotObstacles2D(self):
         self.setDXDYDZ()
-        exit()
-        fig = plt.figure()
-        ax = fig.gca(projection='3d')
+        ax = plt.gca()
         plt.gca().set_aspect('equal', adjustable='box')
-        ax.plot_trisurf(self.X, self.Y, self.Z, antialiased=False)
+        ax.plot(self.x, self.y)
+        for x, y, r in self.obstacles:
+            ax.add_artist(plt.Circle((x, y), r, color='r'))
         # ax.plot(myline)
+        plt.xlim(-1, 16)
+        plt.ylim(-1, 11)
         plt.show()
 
     def plotObstacles3D(self):

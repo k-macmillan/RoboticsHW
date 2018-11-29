@@ -109,6 +109,10 @@ class Problem18_1():
         ax.plot(self.x, self.y)
         for x, y, r in self.obstacles:
             ax.add_artist(plt.Circle((x, y), r, color='r'))
+        ax.add_artist(plt.Circle((self.start[0], self.start[1]),
+                                 radius=0.125, color='g'))
+        ax.add_artist(plt.Circle((self.goal[0], self.goal[1]),
+                                 radius=0.125, color='g'))
         # ax.plot(myline)
         plt.xlim(-1, 16)
         plt.ylim(-1, 11)

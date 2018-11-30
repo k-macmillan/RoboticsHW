@@ -10,11 +10,12 @@ class Problem18_1():
         self.y_min = 0
         self.y_max = 10
         self.eta = 1
-        self.g = 0.005
+        self.g = 0.0175
         self.start = (0, 5)
         self.goal = (15, 5)
         self.obstacles = []
         self.addObstacles()
+        self.avg = 0
 
     # Add field and obstacles
     def addField(self, X, Y):
@@ -29,44 +30,57 @@ class Problem18_1():
         val = (((x - c[0])**2 / (c[2] * c[2])) +
                ((y - c[1])**2 / (c[2] * c[2])) - 1)
         val[val < 0.001] = 0.001
-        val = self.eta / val
+        val = 1 / val
+        # 1 / (((x - 8)^2 / 9) + ((y - 6)^2 / 9) - 1)
         return val
 
     # Partial derivative section
     def diffFieldX(self, x):
-        return 2 * (x - 15)
+        return 2 * x - 30
 
     def diffFieldY(self, y):
-        return 2 * (y - 5)
+        return 2 * y - 10
 
     def diffObstacle1X(self, x, y):
-        top = -(32 * x - 192)
-        bot = (4 * x**2 - 48 * x + y**2 + 156 - 8 * y)**2
-        return top / bot
+        top = 8 * x - 8 * 6
+        bot = (x**2 - 12 * x + y**2 + 48 - 8 * y)**2
+        return -(top / bot)
 
     def diffObstacle2X(self, x, y):
-        top = -(162 * x - 1296)
-        bot = (9 * x**2 - 144 * x + y**2 + 603 - 12 * y)**2
-        return top / bot
+        top = 18 * x - 9 * 16
+        bot = (x**2 - 16 * x + y**2 + 91 - 12 * y)**2
+        return -(top / bot)
 
     def diffObstacle1Y(self, x, y):
-        top = -(8 * y - 32)
-        bot = (4 * x**2 - 48 * x + y**2 + 156 - 8 * y)**2
-        return top / bot
+        top = 8 * y - 8 * 4
+        bot = (x**2 - 12 * x + y**2 + 48 - 8 * y)**2
+        return -(top / bot)
 
     def diffObstacle2Y(self, x, y):
-        top = -(18 * y - 108)
-        bot = (9 * x**2 - 144 * x + y**2 + 603 - 12 * y)**2
-        return top / bot
+        top = 18 * y - 18 * 6
+        bot = (x**2 - 16 * x + y**2 + 91 - 12 * y)**2
+        return -(top / bot)
 
     # Run descent and graph 2D or 3D
     def setDXDYDZ(self):
-        loops = 1000
+        self.setXYZ()
+        loops = len(self.Z)
         x = [self.start[0]]
         y = [self.start[1]]
-        ddx = []
-        ddy = []
-        for i in range(loops):
+        done = False
+        for i in range(1, loops):
+            dist = (x[-1] - self.goal[0])**2 + (y[-1] - self.goal[1])**2
+            # print(dist)
+            if dist > self.eta:
+                self.g = self.eta / dist
+            elif dist > 0.01:
+                self.g *= 0.9
+            else:
+                if not done:
+                    print('Took {} iterations.'.format(i))
+                    done = True
+                self.g = 0
+
             # Calc partial with respect to x
             dx = (self.diffFieldX(x[-1]) +
                   self.diffObstacle1X(x[-1], y[-1]) +
@@ -76,12 +90,8 @@ class Problem18_1():
             dy = (self.diffFieldY(y[-1]) +
                   self.diffObstacle1Y(x[-1], y[-1]) +
                   self.diffObstacle2Y(x[-1], y[-1]))
-            dx *= self.g
-            dy *= self.g
-
-            # Made this to check gradients
-            ddx.append(dx)
-            ddy.append(dy)
+            dx = self.g * dx
+            dy = self.g * dy
 
             x.append(x[-1] - dx)
             y.append(y[-1] - dy)
@@ -89,8 +99,6 @@ class Problem18_1():
         # 'x' because it makes the code cleaner, then assigned to self.x
         self.x = x
         self.y = y
-        print('min dx: {}\t max dx: {}'.format(min(ddx), max(ddx)))
-        print('min dy: {}\t max dy: {}'.format(min(ddy), max(ddy)))
 
     def plotObstacles2D(self):
         self.setDXDYDZ()
@@ -103,7 +111,6 @@ class Problem18_1():
                                  radius=0.125, color='g'))
         ax.add_artist(plt.Circle((self.goal[0], self.goal[1]),
                                  radius=0.125, color='g'))
-        # ax.plot(myline)
         plt.xlim(-1, 16)
         plt.ylim(-1, 11)
         plt.show()
@@ -121,12 +128,14 @@ class Problem18_1():
         self.Y = Y.flatten()
 
     def plotObstacles3D(self):
-        self.setXYZ()
+        # self.setXYZ()
+        self.setDXDYDZ()
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         plt.gca().set_aspect('equal', adjustable='box')
         ax.plot_trisurf(self.X, self.Y, self.Z, antialiased=False)
-        # ax.plot(myline)
+        plt.xlim(-1, 16)
+        plt.ylim(-1, 11)
         plt.show()
 
 

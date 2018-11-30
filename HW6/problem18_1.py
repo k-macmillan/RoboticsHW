@@ -70,7 +70,7 @@ class Problem18_1():
         done = False
         for i in range(1, loops):
             dist = (x[-1] - self.goal[0])**2 + (y[-1] - self.goal[1])**2
-            # print(dist)
+
             if dist > self.eta:
                 self.g = self.eta / dist
             elif dist > 0.01:
@@ -133,7 +133,8 @@ class Problem18_1():
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         plt.gca().set_aspect('equal', adjustable='box')
-        ax.plot_trisurf(self.X, self.Y, self.Z, antialiased=False)
+        # ax.plot_trisurf(self.X, self.Y, self.Z, antialiased=False)
+        ax.plot(self.x, self.y, self.Z, 'go')
         plt.xlim(-1, 16)
         plt.ylim(-1, 11)
         plt.show()
@@ -141,5 +142,5 @@ class Problem18_1():
 
 if __name__ == '__main__':
     p18 = Problem18_1()
-    # p18.plotObstacles3D()
-    p18.plotObstacles2D()
+    p18.plotObstacles3D()
+    # p18.plotObstacles2D()

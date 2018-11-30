@@ -67,7 +67,7 @@ class Problem18_1():
         loops = len(self.Z)
         x = [self.start[0]]
         y = [self.start[1]]
-        done = False
+
         for i in range(1, loops):
             dist = (x[-1] - self.goal[0])**2 + (y[-1] - self.goal[1])**2
 
@@ -76,10 +76,8 @@ class Problem18_1():
             elif dist > 0.01:
                 self.g *= 0.9
             else:
-                if not done:
-                    print('Took {} iterations.'.format(i))
-                    done = True
                 self.g = 0
+                break
 
             # Calc partial with respect to x
             dx = (self.diffFieldX(x[-1]) +
@@ -142,5 +140,5 @@ class Problem18_1():
 
 if __name__ == '__main__':
     p18 = Problem18_1()
-    p18.plotObstacles3D()
-    # p18.plotObstacles2D()
+    # p18.plotObstacles3D()
+    p18.plotObstacles2D()
